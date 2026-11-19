@@ -1,6 +1,6 @@
 # Stock Vision task checklist
 
-Status: implementation in progress; tasks 1-3 implemented, hosted checks pending.
+Status: tasks 1-3 complete; PR #2 awaits user review and merge before task 4.
 
 Baseline checks (from repository root): `uv run --locked ruff check .`,
 `uv run --locked ruff format --check .`, `uv run --locked pre-commit run --all-files`.
@@ -21,8 +21,8 @@ File lists are estimates; split work further before exceeding about five files.
 - [x] uv sync --locked; baseline checks.
 
 Completed task 1: renamed metadata and refreshed the lockfile; Python 3.15 is
-unchanged. Locked sync and baseline checks passed. Ruff found no Python source;
-pre-commit skipped its Python hooks. Tasks 2-3 remain for the first PR boundary.
+unchanged. Locked sync and baseline checks passed. At this task's revision, Ruff
+found no Python source and pre-commit skipped its Python hooks.
 
 **Dependencies:** None
 
@@ -42,7 +42,11 @@ pre-commit skipped its Python hooks. Tasks 2-3 remain for the first PR boundary.
 - [x] existing lint/title jobs remain.
 
 **Verification:**
-- [ ] Run branch validator self-check; exercise Commitizen with valid and invalid messages; inspect Actions.
+- [x] Run branch validator self-check; exercise Commitizen with valid and invalid messages; inspect Actions.
+
+Two unittest cases cover 16 valid/invalid branch inputs. Commitizen accepted
+valid messages and rejected an invalid message. GitHub push and PR checks passed
+with branch validation, full PR commit-range validation, and existing hooks.
 
 **Dependencies:** 1
 
@@ -61,7 +65,7 @@ pre-commit skipped its Python hooks. Tasks 2-3 remain for the first PR boundary.
 - [x] AGENTS reflects current scope.
 
 **Verification:**
-- [ ] Follow setup instructions; baseline checks; verify latest Actions.
+- [x] Follow setup instructions; baseline checks; verify latest Actions.
 
 **Dependencies:** 2
 
@@ -73,9 +77,13 @@ pre-commit skipped its Python hooks. Tasks 2-3 remain for the first PR boundary.
 
 ## Checkpoint: after task 3
 
-- [ ] All currently applicable tests, lint and builds pass; no checks bypassed.
-- [ ] Review diff and verify the capability introduced above manually.
-- [ ] Open/update the single scoped PR, verify latest CI, and wait for user review and merge before the next PR.
+- [x] All currently applicable tests, lint and builds pass; no checks bypassed.
+- [x] Review diff and verify the capability introduced above manually.
+- [x] Open/update the single scoped PR, verify latest CI, and wait for user review and merge before the next PR.
+
+Locked setup, hook installation, Ruff, unittest, pre-commit, and Commitizen checks
+passed locally and in GitHub Actions. Scoped self-review found no blockers.
+There is no application build yet. Continue with task 4 only after PR #2 merges.
 
 ## Task 4: Establish the installable Python package
 
