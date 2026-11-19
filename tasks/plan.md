@@ -16,8 +16,9 @@ There are no source files, application tests, frontend, or Docker configuration.
 
 ## Architecture decisions
 
-- Keep one repository: `backend/` for FastAPI, `frontend/` for React, and root
-  Python tooling. Use Vite and TypeScript for the frontend, with an npm lockfile.
+- Keep one repository: an installable `src/stock_vision/` Python package,
+  separate root `tests/`, and `frontend/src/` for React. Root `pyproject.toml`
+  and `uv.lock` own Python tooling; frontend has its own npm lockfile.
 - Serve a small checked-in sample dataset through `GET /api/stocks`. Include
   symbol, name, sector, USD price, USD market capitalization, and nullable P/E.
   Mark API metadata and the screen as sample data, not live quotes.
@@ -28,7 +29,9 @@ There are no source files, application tests, frontend, or Docker configuration.
   Apply combined filters with AND; numerical bounds are inclusive. Exclude
   unknown values from active numeric filters; sort nulls last in both directions.
 - Keep filtering on the backend. Use a deterministic symbol tie-break for sorting.
-  The small sample universe does not need pagination or a database.
+  Return an envelope with items, total, limit, offset, and sample provenance.
+  Bound page size from the first endpoint (default 50, maximum 100); apply
+  filtering and stable sorting before pagination. A database can come later.
 - Use pytest with FastAPI TestClient for API checks and browser tests for the
   actual frontend/API flow. Add frontend unit tests only for isolated logic that
   browser tests do not adequately cover.
@@ -38,6 +41,82 @@ There are no source files, application tests, frontend, or Docker configuration.
   during implementation. Do not use the development server as the runtime image.
 - Keep Python 3.15 unless a reproducible dependency compatibility failure requires
   a deliberate version change across the pin, metadata, lockfile, CI, and image.
+
+## Source layout and growth boundaries
+
+Build one modular application, organized by feature. Create each module when
+its task introduces real behavior; this tree is the target, not empty scaffolding.
+
+```text
+pyproject.toml                  # package/build configuration and Python tools
+uv.lock
+src/stock_vision/
+  __init__.py
+  main.py                      # app creation, router registration, asset mounting
+  stocks/
+    __init__.py
+    router.py                  # HTTP validation and response mapping
+    schemas.py                 # stock, query, and paginated response contracts
+    service.py                 # filtering, ordering, pagination; no HTTP objects
+    source.py                  # sample loading; future provider integration point
+    sample_stocks.json         # packaged deterministic data
+tests/
+  unit/                        # screening rules and source validation
+  integration/                 # HTTP contracts and installed-package smoke checks
+frontend/
+  src/
+    main.tsx                   # React bootstrap
+    App.tsx                    # page composition only
+    features/screener/
+      api.ts                   # typed stock requests and API error handling
+      Screener.tsx             # query state and request lifecycle
+      StockTable.tsx           # accessible rows and pagination controls
+      Filters.tsx              # search, sector and numerical controls when added
+    styles.css
+  tests/                       # browser flows
+scripts/                       # development and CI utilities, not application code
+tasks/                         # plan and implementation checklist
+.github/workflows/
+Dockerfile
+.dockerignore
+```
+
+### Dependency rules
+
+- `main.py` composes modules. Stock routes call screening functions and an
+  injectable source function; source code and screening logic never import
+  routers. Keep the seam a simple function until multiple implementations need
+  a formal interface. No generic repository classes or dependency container.
+- The frontend uses the HTTP contract, never sample files or backend internals.
+  Keep feature-specific components inside `features/screener/`; extract shared
+  components only when a second feature actually reuses them.
+- Python tests import `stock_vision` from the installed package. Configure a
+  build backend and package data explicitly; no `sys.path` edits or `PYTHONPATH`
+  workaround. CI builds a wheel and smoke-tests it outside the source checkout,
+  including access to the packaged sample data. Docker installs that package.
+- Keep requests stateless: immutable sample data, request-local filter state,
+  no user state or correctness-critical cache in process globals. Cancel stale
+  frontend requests so old responses cannot replace newer filter results.
+
+### Scaling path and verification
+
+Bound responses now and test page limits, empty/out-of-range pages, stable ties,
+null handling, and combined filters across pages. Reset pagination when filters
+change. Tests must use more than one page of data. The sample implementation may
+scan its small in-memory dataset; bounded output does not imply bounded query cost.
+
+Before connecting a large/live universe, implement the source boundary with
+indexed database queries that perform filtering, sorting, and pagination. Add
+ingestion and provider rate-limit handling outside request handlers when needed.
+Use shared persistence/cache only once their consistency and freshness rules are
+defined. Stateless API instances can then be replicated behind a load balancer;
+static assets can move to a CDN without changing the frontend API contract.
+
+Before claiming production capacity, choose an explicit universe size, request
+rate, concurrency, and latency target; measure latency percentiles, errors, and
+memory against representative data. No capacity target or load result is assumed
+for the sample version. Microservices, queues, Kubernetes, and distributed caches
+are not prerequisites for this structure.
 
 ## Sequential delivery and commits
 
@@ -70,12 +149,14 @@ that those tools or scripts already exist.
 | --- | --- | --- | --- |
 | 0 | Plan and review | This plan | Architecture plan; executable task checklist |
 | 1 | Development conventions | 1-3 | Project identity; commit/branch CI; contributor guide |
-| 2 | Browse sample stocks | 4-9 | API + tests; frontend setup; table; frontend checks; browser check; docs |
-| 3 | Screen stocks | 10-12 | Search/sector slice; numeric filter slice; sorting slice |
+| 2 | Browse sample stocks | 4-9, including 4a/4b/6a | Package; source; API + tests; frontend setup; paginated table; CI; docs |
+| 3 | Screen stocks | 10-12, including 10a/11a/12a | Search/sector slice; numeric filter slice; sorting slice |
 | 4 | Run the verified container | 13-15 | Container + smoke check; Docker CI; runbook |
 
 Checkpoints after every two or three tasks verify progress within a PR; the PR
 boundary is the human review/merge gate. A task checkpoint is not another PR.
+Lettered tasks split larger work into focused commits while preserving existing
+task identifiers. Finish each API-to-UI feature pair before beginning the next.
 
 ## Toolkit by phase
 
@@ -123,7 +204,7 @@ accuracy checks, not an application test suite.
 Instruction filenames in the table resolve under `~/.codex/instructions/`.
 If AGENTS.md itself is edited, also load `instructions.instructions.md` and
 `prompt.instructions.md`, as required by the user's instruction routing.
-Use only the relevant parts of broad skills: no speculative pagination,
+Use only the relevant parts of broad skills: no speculative infrastructure,
 framework migration, state library, deployment, or security service is implied.
 
 ### Optional agents
@@ -184,6 +265,10 @@ Clarify only if individual commits must survive on main rather than in each PR.
 
 ## Documentation consulted
 
+- [uv build backend](https://docs.astral.sh/uv/concepts/build-backend/):
+  installable packages with a `src` layout and package build configuration.
+- [FastAPI larger applications](https://fastapi.tiangolo.com/tutorial/bigger-applications/):
+  feature routers composed into the application with explicit dependencies.
 - [FastAPI testing](https://fastapi.tiangolo.com/tutorial/testing/): synchronous
   TestClient tests with pytest and httpx.
 - [React from scratch](https://react.dev/learn/build-a-react-app-from-scratch):
