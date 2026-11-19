@@ -1,106 +1,73 @@
-# Python project template
+# Stock Vision
 
-Start a Python 3.15 project with uv dependency management, Ruff linting and
-formatting, and Conventional Commits enforced through pre-commit and Commitizen.
-GitHub Actions checks linting and formatting on every push and pull request.
+A stock screener being built with a Python/FastAPI backend and React/TypeScript
+frontend. The first version will use explicitly labeled sample data.
 
-This is a bare starting point: add your own source files and tests when you need
-them. There is no application entry point or package build configuration.
-
-## Create your project
-
-1. Select **Use this template → Create a new repository** on GitHub.
-2. Give your new repository a name, then clone it:
-
-   ```sh
-   git clone https://github.com/YOUR-USERNAME/YOUR-PROJECT.git
-   cd YOUR-PROJECT
-   ```
-
-3. In [pyproject.toml](pyproject.toml), change `project.name` from `py-template`
-   to your project name. Replace this README with your project's documentation
-   after setup.
-
-> [!NOTE]
-> If you are maintaining the original template, enable **Settings → General →
-> Template repository** on GitHub to make **Use this template** available.
+Currently this repository provides development tooling and convention checks.
+There is no runnable application, frontend, or Docker image yet. See the
+[implementation plan](tasks/plan.md) and [task checklist](tasks/todo.md).
 
 ## Set up locally
 
-Install Git and [uv](https://docs.astral.sh/uv/getting-started/installation/), and
-keep both available on your PATH. From your new project's directory, run:
+Install Git and [uv](https://docs.astral.sh/uv/getting-started/installation/), then:
 
 ```sh
-uv lock
+git clone https://github.com/brobinson5221/stock-vision.git
+cd stock-vision
 uv sync --locked
-uv run pre-commit install
+uv run --locked pre-commit install
 ```
 
-`uv lock` updates the lockfile after renaming the project. uv uses the Python
-3.15 pin in [.python-version](.python-version), downloads Python if needed, and
-installs the development tools into `.venv`.
+uv follows the Python 3.15 pin in [.python-version](.python-version) and installs
+development tools into `.venv`. Hook installation enables both pre-commit and
+commit-message checks; repeat it in each checkout.
 
-The hook installation enables both `pre-commit` and `commit-msg` checks. Every
-developer must install hooks in their own clone; Git does not copy installed hooks.
-For later clones of your renamed project, start with `uv sync --locked`.
+## Development loop
 
-## Develop
+Start a branch from updated `main` using `codex/<type>/<description>`, for example
+`codex/feat/sample-screener`. Descriptions use lowercase letters and digits
+separated by single hyphens. Allowed types are `feat`, `fix`, `docs`, `style`,
+`refactor`, `perf`, `test`, `build`, `ci`, `chore`, and `revert`.
 
-Add dependencies with uv:
-
-```sh
-uv add requests
-uv add --dev pytest
-```
-
-These are examples; neither dependency is included in the template. Commit
-`pyproject.toml` and `uv.lock` whenever dependencies change. Keep `.venv` out of Git.
-
-Check and format your code:
-
-```sh
-uv run ruff check --fix .
-uv run ruff format .
-uv run pre-commit run --all-files
-```
-
-Ruff uses a 100-character line length and the lint rules configured in
-[pyproject.toml](pyproject.toml). Adjust those rules to suit your project.
-
-## Commit changes
-
-Stage your changes, then use Commitizen's prompts:
-
-```sh
-git add .
-uv run cz commit
-```
-
-Ordinary commits work too, using a Conventional Commit message:
-
-```sh
-git commit -m "feat: add CSV import"
-```
-
-Ruff checks staged Python files before committing; Commitizen validates the commit
-message. If Ruff edits files, review and stage the changes, then retry the commit.
-
-## GitHub checks
-
-The [Checks workflow](.github/workflows/checks.yml) installs locked dependencies
-with Python 3.15 and runs:
+Run checks from the repository root:
 
 ```sh
 uv run --locked ruff check .
 uv run --locked ruff format --check .
+uv run --locked python -m unittest discover -s tests -v
+uv run --locked pre-commit run --all-files
+uv run --locked python scripts/check_branch.py codex/feat/sample-screener
 ```
 
-Check results in your repository's **Actions** tab. CI reports lint and formatting
-errors without editing files. The template does not yet include automated tests
-or individual commit-message validation in CI.
+The tests currently cover the branch validator. Format with `uv run ruff format .`.
+Hooks can change files; review and stage those edits before retrying a commit.
 
-The [PR title workflow](.github/workflows/pr-title.yml) checks pull request titles
-against Conventional Commits, for example `docs: clarify template setup`. It runs
-when a PR is opened, updated, reopened, or its title is edited. Direct pushes do
-not trigger this workflow. Use squash merging with the PR title as the commit
-message to carry the validated title into your project's history.
+Use `uv add PACKAGE` for runtime dependencies and `uv add --dev PACKAGE` for
+development tools. Commit `pyproject.toml` and `uv.lock` together when they change.
+
+Make focused Conventional Commits with working code and its tests together.
+Use `uv run cz commit` for prompts, or `git commit -m "ci: validate conventions"`.
+Separate independently reviewable tooling, feature, and documentation changes.
+
+Keep one PR open at a time. Finish its checks and review, then wait for the user
+to merge it before branching from updated `main` for the next PR. Use squash
+merging with the Conventional Commit PR title; development commits remain
+reviewable within the PR. Follow the boundaries in the task checklist.
+
+## GitHub verification
+
+The [Checks workflow](.github/workflows/checks.yml) runs locked installation,
+Ruff, branch-validator tests, and existing pre-commit hooks on pushes and PRs.
+On PRs it also validates the branch name and every commit in the PR base-to-head
+range with Commitizen. The [PR title workflow](.github/workflows/pr-title.yml)
+checks Conventional Commit titles.
+
+To check the local commit range after fetching `origin/main`:
+
+```sh
+uv run --locked cz check --rev-range origin/main..HEAD
+```
+
+For an observed failure, reproduce it and add a focused regression check when
+coverage is missing. Extend existing CI where it fits; add a job only for a
+distinct unchecked boundary. Inspect the latest PR checks before review.

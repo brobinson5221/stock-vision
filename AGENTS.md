@@ -6,8 +6,11 @@ Read `README.md`, `pyproject.toml`, and `.github/workflows/` before making chang
 Discover source layout, run commands, and test commands from the current project.
 Keep this guidance updated as the project grows.
 
-This template starts without application code, a test runner, or build and
-deployment workflows. Introduce those only when the project needs them.
+Stock Vision currently has development tooling and standard-library unittest
+tests for its branch validator, with no application or container yet. Follow
+`tasks/plan.md` and `tasks/todo.md`. The planned application uses an installable
+`src/stock_vision/` package, separate `tests/`, and `frontend/src/`; create modules
+only when their task introduces behavior.
 
 ## Setup and dependencies
 
@@ -21,8 +24,7 @@ uv run pre-commit install
 
 Use `uv run` for project commands, `uv add PACKAGE` for runtime dependencies, and
 `uv add --dev PACKAGE` for development tools. Commit `pyproject.toml` and `uv.lock`
-together when dependencies change. After renaming a new template copy, run
-`uv lock` before syncing.
+together when dependencies change.
 
 ## Validation
 
@@ -31,6 +33,7 @@ Follow the Ruff configuration in `pyproject.toml`. Before submitting changes:
 ```sh
 uv run --locked ruff check .
 uv run --locked ruff format --check .
+uv run --locked python -m unittest discover -s tests -v
 uv run --locked pre-commit run --all-files
 ```
 
@@ -40,18 +43,27 @@ what ran and what could not be checked. Lint success is not a passing test suite
 
 ## Commits and pull requests
 
-Work on a feature branch, preserve unrelated user edits, and submit changes through
-pull requests. Push, create PRs, and merge only within the user's authorization.
+Work on a `codex/<type>/<lowercase-kebab-description>` feature branch, preserve
+unrelated user edits, and submit changes through pull requests. Validate branch
+names with `uv run --locked python scripts/check_branch.py BRANCH`.
+Push, create PRs, and merge only within the user's authorization.
 
 Use Conventional Commits for commit subjects and PR titles, such as
 `feat: add CSV import` or `docs: explain setup`. Always use the
 `commit-message-storyteller` skill when available and base messages on the staged
 diff.
 
-The included workflows check Ruff and PR titles. Use squash merging with the PR
-title as the commit message. Each repository created from the template needs its
-own rulesets and merge settings; verify those settings before assuming checks
-are required.
+Keep focused commits with working code and its tests together. Keep one PR open
+at a time at the plan's PR boundaries; leave merging to the user. After it merges,
+fetch updated main before starting the next PR. Use the repository `pr` and
+`create-pr` skills for submissions and review the scoped diff with `ponytail-review`.
+
+The workflows check Ruff, unittest, hooks, PR branch names, all PR commit messages,
+and PR titles. Locally validate commits with
+`uv run --locked cz check --rev-range origin/main..HEAD` after fetching main.
+Use squash merging with the PR title as the commit message. Verify current
+rulesets before assuming checks are required. Add regression checks for observed
+failures; extend CI only where coverage is missing.
 
 ## Current documentation
 

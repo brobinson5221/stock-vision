@@ -1,6 +1,6 @@
 # Stock Vision task checklist
 
-Status: proposed; implementation awaits plan review. Task list target: this file.
+Status: implementation in progress; tasks 1-3 implemented, hosted checks pending.
 
 Baseline checks (from repository root): `uv run --locked ruff check .`,
 `uv run --locked ruff format --check .`, `uv run --locked pre-commit run --all-files`.
@@ -37,9 +37,9 @@ pre-commit skipped its Python hooks. Tasks 2-3 remain for the first PR boundary.
 **Description:** Add CI validation for branch names, all PR commit messages, and existing hooks.
 
 **Acceptance criteria:**
-- [ ] Valid examples pass and invalid examples fail
-- [ ] PR base-to-head range is checked
-- [ ] existing lint/title jobs remain.
+- [x] Valid examples pass and invalid examples fail
+- [x] PR base-to-head range is checked
+- [x] existing lint/title jobs remain.
 
 **Verification:**
 - [ ] Run branch validator self-check; exercise Commitizen with valid and invalid messages; inspect Actions.
@@ -57,8 +57,8 @@ pre-commit skipped its Python hooks. Tasks 2-3 remain for the first PR boundary.
 **Description:** Replace template setup instructions with the actual project workflow.
 
 **Acceptance criteria:**
-- [ ] README covers uv, hooks, commit boundaries and serial PRs
-- [ ] AGENTS reflects current scope.
+- [x] README covers uv, hooks, commit boundaries and serial PRs
+- [x] AGENTS reflects current scope.
 
 **Verification:**
 - [ ] Follow setup instructions; baseline checks; verify latest Actions.
