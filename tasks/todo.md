@@ -14,11 +14,15 @@ File lists are estimates; split work further before exceeding about five files.
 **Description:** Rename template metadata and lock it without changing the Python pin.
 
 **Acceptance criteria:**
-- [ ] Project name is stock-vision
-- [ ] locked install succeeds.
+- [x] Project name is stock-vision
+- [x] locked install succeeds.
 
 **Verification:**
-- [ ] uv sync --locked; baseline checks.
+- [x] uv sync --locked; baseline checks.
+
+Completed task 1: renamed metadata and refreshed the lockfile; Python 3.15 is
+unchanged. Locked sync and baseline checks passed. Ruff found no Python source;
+pre-commit skipped its Python hooks. Tasks 2-3 remain for the first PR boundary.
 
 **Dependencies:** None
 
