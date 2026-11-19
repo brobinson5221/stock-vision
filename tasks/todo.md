@@ -1,6 +1,6 @@
 # Stock Vision task checklist
 
-Status: proposed; implementation awaits plan review. Task list target: this file.
+Status: tasks 1-3 complete; PR #2 awaits user review and merge before task 4.
 
 Baseline checks (from repository root): `uv run --locked ruff check .`,
 `uv run --locked ruff format --check .`, `uv run --locked pre-commit run --all-files`.
@@ -14,11 +14,15 @@ File lists are estimates; split work further before exceeding about five files.
 **Description:** Rename template metadata and lock it without changing the Python pin.
 
 **Acceptance criteria:**
-- [ ] Project name is stock-vision
-- [ ] locked install succeeds.
+- [x] Project name is stock-vision
+- [x] locked install succeeds.
 
 **Verification:**
-- [ ] uv sync --locked; baseline checks.
+- [x] uv sync --locked; baseline checks.
+
+Completed task 1: renamed metadata and refreshed the lockfile; Python 3.15 is
+unchanged. Locked sync and baseline checks passed. At this task's revision, Ruff
+found no Python source and pre-commit skipped its Python hooks.
 
 **Dependencies:** None
 
@@ -33,12 +37,16 @@ File lists are estimates; split work further before exceeding about five files.
 **Description:** Add CI validation for branch names, all PR commit messages, and existing hooks.
 
 **Acceptance criteria:**
-- [ ] Valid examples pass and invalid examples fail
-- [ ] PR base-to-head range is checked
-- [ ] existing lint/title jobs remain.
+- [x] Valid examples pass and invalid examples fail
+- [x] PR base-to-head range is checked
+- [x] existing lint/title jobs remain.
 
 **Verification:**
-- [ ] Run branch validator self-check; exercise Commitizen with valid and invalid messages; inspect Actions.
+- [x] Run branch validator self-check; exercise Commitizen with valid and invalid messages; inspect Actions.
+
+Two unittest cases cover 16 valid/invalid branch inputs. Commitizen accepted
+valid messages and rejected an invalid message. GitHub push and PR checks passed
+with branch validation, full PR commit-range validation, and existing hooks.
 
 **Dependencies:** 1
 
@@ -53,11 +61,11 @@ File lists are estimates; split work further before exceeding about five files.
 **Description:** Replace template setup instructions with the actual project workflow.
 
 **Acceptance criteria:**
-- [ ] README covers uv, hooks, commit boundaries and serial PRs
-- [ ] AGENTS reflects current scope.
+- [x] README covers uv, hooks, commit boundaries and serial PRs
+- [x] AGENTS reflects current scope.
 
 **Verification:**
-- [ ] Follow setup instructions; baseline checks; verify latest Actions.
+- [x] Follow setup instructions; baseline checks; verify latest Actions.
 
 **Dependencies:** 2
 
@@ -69,9 +77,13 @@ File lists are estimates; split work further before exceeding about five files.
 
 ## Checkpoint: after task 3
 
-- [ ] All currently applicable tests, lint and builds pass; no checks bypassed.
-- [ ] Review diff and verify the capability introduced above manually.
-- [ ] Open/update the single scoped PR, verify latest CI, and wait for user review and merge before the next PR.
+- [x] All currently applicable tests, lint and builds pass; no checks bypassed.
+- [x] Review diff and verify the capability introduced above manually.
+- [x] Open/update the single scoped PR, verify latest CI, and wait for user review and merge before the next PR.
+
+Locked setup, hook installation, Ruff, unittest, pre-commit, and Commitizen checks
+passed locally and in GitHub Actions. Scoped self-review found no blockers.
+There is no application build yet. Continue with task 4 only after PR #2 merges.
 
 ## Task 4: Establish the installable Python package
 
