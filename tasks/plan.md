@@ -77,6 +77,74 @@ that those tools or scripts already exist.
 Checkpoints after every two or three tasks verify progress within a PR; the PR
 boundary is the human review/merge gate. A task checkpoint is not another PR.
 
+## Toolkit by phase
+
+Use the existing resources below when their task begins; do not install or copy
+the entire toolkit into the repository. Global instructions are already routed
+by the user's AGENTS.md. Read their owning files for the applicable task rather
+than duplicating their contents here. This map does not expand feature scope.
+
+In this section, `~` means the user's home directory. Global skills live under
+`~/.codex/skills/`, instructions under `~/.codex/instructions/`, and agent
+definitions under `~/.codex/agents/`. Plugin skills are identified by their
+session catalog names; resolve the active version's path when loading them.
+These global resources are local prerequisites, not files shipped by this repo.
+
+### Shared workflow
+
+| When | Resource | Purpose |
+| --- | --- | --- |
+| Revising the plan | `agent-skills:planning-and-task-breakdown` | Keep tasks, dependencies, acceptance criteria, and PR gates aligned. |
+| Starting a branch | `~/.codex/skills/conventional-branch/SKILL.md` | Apply this project's `codex/<type>/<description>` policy and validate the Git ref. |
+| Each commit | [commit-message-storyteller](../.agents/skills/commit-message-storyteller/SKILL.md) | Base a coherent Conventional Commit on the staged diff. |
+| Reviewing code/configuration | [ponytail-review](../.agents/skills/ponytail-review/SKILL.md) | Check connected code for defects, missing tests, and unnecessary complexity. |
+| Each PR | [pr](../.agents/skills/pr/SKILL.md) and [create-pr](../.agents/skills/create-pr/SKILL.md) | Provide evidence, follow latest CI, and leave merging to the user. |
+
+Apply `context-engineering.instructions.md` when gathering context and
+`context7.instructions.md` for library/tool documentation. Code changes use
+`self-explanatory-code-commenting.instructions.md` and
+`update-docs-on-code-change.instructions.md`; scoped reviews use
+`code-review-generic.instructions.md`. Markdown edits use
+`markdown.instructions.md`. All filenames in this paragraph refer to the global
+instructions directory above. Documentation-only reviews need link and command
+accuracy checks, not an application test suite.
+
+### Implementation stages
+
+| Phase / tasks | Skills and instructions to load | Intended use |
+| --- | --- | --- |
+| Conventions, tasks 1-3 | `github-actions-ci-cd-best-practices.instructions.md` | Branch/commit checks, hooks in CI, action pins, and existing required checks. |
+| Backend, task 4 and tasks 10-12 | `codexer.instructions.md` plus Context7 guidance | Python/FastAPI dependencies, response contracts, validation, and focused tests. |
+| Frontend, tasks 5-6 and tasks 10-12 | `agent-skills:frontend-ui-engineering`; `html-css-style-color-guide.instructions.md` | Accessible tables and controls, responsive layout, contrast, and loading/error/empty states. |
+| Source and browser CI, tasks 7-8 and tasks 10-12 | `github-actions-ci-cd-best-practices.instructions.md`; `playwright-typescript.instructions.md` | Real API/browser verification, resilient locators, and diagnostic artifacts. |
+| Container, tasks 13-14 | `containerization-docker-best-practices.instructions.md`; GitHub Actions guidance | Build the final image, verify startup and runtime permissions, and retain failure logs. |
+| Documentation, tasks 3, 9, 15 | `~/.codex/skills/create-readme/SKILL.md`; Markdown and documentation-impact guidance | Keep setup, run commands, and limitations consistent with implemented behavior. |
+
+Instruction filenames in the table resolve under `~/.codex/instructions/`.
+If AGENTS.md itself is edited, also load `instructions.instructions.md` and
+`prompt.instructions.md`, as required by the user's instruction routing.
+Use only the relevant parts of broad skills: no speculative pagination,
+framework migration, state library, deployment, or security service is implied.
+
+### Optional agents
+
+These roles were available during toolkit discovery. Recheck availability when
+needed; finding a TOML file alone does not prove a role is registered. Listing a
+role here does not authorize spawning it. Delegate only when explicitly requested
+or otherwise authorized by applicable instructions, with bounded ownership and
+the same sequential PR gates.
+
+| Agent definition under `~/.codex/agents/` | Use when delegated | Boundary |
+| --- | --- | --- |
+| `ai-team-dev.toml` | Implement one coherent backend/frontend feature slice. | Default implementation role; preserve other edits and avoid extra architecture. |
+| `github-actions-expert.toml` | Implement or diagnose a specific CI job. | Keep broader scanning and deployment recommendations within authorized scope. |
+| `playwright-tester.toml` | Explore the running screener and add browser tests. | Requires a runnable app and browser access; report missing prerequisites. |
+
+No extra coordinator, model changes, agent registration, or duplicate resource
+installation is required. If a resource is missing on another machine, report
+the gap and resolve it within that task's authorization rather than silently
+claiming it was loaded.
+
 ## CI and failure feedback
 
 Grow the existing workflows as each capability appears: conventions and hooks,
