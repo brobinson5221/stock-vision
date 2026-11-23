@@ -8,9 +8,13 @@ permissions:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
 
       - uses: astral-sh/setup-uv@18d369b23da25a81e9458561248e1aafff6a70fa # v10.3.1
         with:
@@ -24,3 +28,19 @@ jobs:
 
       - name: Check formatting
         run: uv run --locked ruff format --check .
+
+      - name: Test branch validator
+        run: uv run --locked python -m unittest discover -s tests -v
+
+      - name: Run hooks
+        run: uv run --locked pre-commit run --all-files
+
+      - name: Validate PR branch and all commits
+        if: github.event_name == 'pull_request'
+        env:
+          PR_BRANCH: ${{ github.head_ref }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          uv run --locked python scripts/check_branch.py "$PR_BRANCH"
+          uv run --locked cz check --rev-range "$BASE_SHA..$HEAD_SHA"
