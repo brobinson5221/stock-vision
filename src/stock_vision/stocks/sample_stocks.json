@@ -1,0 +1,12 @@
+{
+  "provenance": "synthetic-sample",
+  "currency": "USD",
+  "items": [
+    {"symbol": "DEMOA", "name": "Demo Alpha", "sector": "Technology", "price": 100, "market_cap": 1000000000, "pe_ratio": 25},
+    {"symbol": "DEMOB", "name": "Demo Beta", "sector": "Healthcare", "price": 50, "market_cap": 500000000, "pe_ratio": null},
+    {"symbol": "DEMOC", "name": "Demo Gamma", "sector": "Industrials", "price": 25, "market_cap": null, "pe_ratio": 15},
+    {"symbol": "DEMOD", "name": "Demo Delta", "sector": "Technology", "price": 75, "market_cap": 750000000, "pe_ratio": 25},
+    {"symbol": "DEMOE", "name": "Demo Epsilon", "sector": "Energy", "price": 20, "market_cap": 200000000, "pe_ratio": 10},
+    {"symbol": "DEMOF", "name": "Demo Zeta", "sector": "Healthcare", "price": 40, "market_cap": 400000000, "pe_ratio": 20}
+  ]
+}
