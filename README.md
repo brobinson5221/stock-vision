@@ -7,7 +7,8 @@ Currently this repository provides an installable Python package, development
 tooling, and convention checks.
 The packaged sample source contains six fictional companies with synthetic USD
 values, explicitly labeled `synthetic-sample`; these are not market quotes.
-There is no runnable application, frontend, or Docker image yet. See the
+The sample API and connected frontend run locally; the paginated table and Docker
+packaging are still pending. See the
 [implementation plan](tasks/plan.md) and [task checklist](tasks/todo.md).
 
 ## Set up locally
@@ -59,7 +60,45 @@ and Uvicorn are runtime dependencies; pytest and httpx are development tools.
 records from package resources, independent of the working directory. Price is
 USD per share and market capitalization is USD; unavailable market cap and P/E
 remain `None`. Pagination inputs default to limit 50 and offset 0, with limit
-1–100 and nonnegative offset. HTTP endpoints follow in the next task.
+1–100 and nonnegative offset.
+
+## Run the sample API
+
+```sh
+uv run --locked uvicorn stock_vision.main:app --reload
+```
+
+Open `http://127.0.0.1:8000/docs` for the API explorer.
+`GET /api/health` returns `{"status":"ok"}`. `GET /api/stocks?limit=2&offset=0`
+returns `items`, `total`, `limit`, `offset`, `provenance`, and `currency`.
+Results are ordered by symbol before pagination; out-of-range pages are empty
+with the total preserved. Invalid page bounds return HTTP 422.
+
+## Run the frontend
+
+Use Node.js 24 and npm (verified with Node 24.14.1 and npm 11.19.1).
+From the repository root:
+
+```sh
+npm --prefix frontend ci
+npm --prefix frontend run dev
+```
+
+Keep the sample API running on `127.0.0.1:8000` in another terminal, then open the
+local URL printed by Vite. Its development proxy forwards `/api` requests to the
+backend. The screener displays the first page as a simple stock list with
+loading, empty, and retryable error states. Reload cancels the previous request;
+late responses cannot replace current results. Table/pagination controls follow
+in task 6a.
+
+```sh
+npm --prefix frontend run build
+npm --prefix frontend run preview
+```
+
+The build runs strict TypeScript checking and writes static assets to
+`frontend/dist/`. Preview serves those assets locally for verification.
+Frontend CI will be added in task 7.
 
 Make focused Conventional Commits with working code and its tests together.
 Use `uv run cz commit` for prompts, or `git commit -m "ci: validate conventions"`.

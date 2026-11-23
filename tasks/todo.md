@@ -1,7 +1,6 @@
 # Stock Vision task checklist
 
-Status: PR #3 merged by the user after task 4. Task 4a complete on the next branch;
-tasks 4b–9 remain for the sample-browsing PR.
+Status: tasks 4b–6 complete in draft PR #5; tasks 6a–9 remain in the same PR.
 
 Baseline checks (from repository root): `uv run --locked ruff check .`,
 `uv run --locked ruff format --check .`, `uv run --locked pre-commit run --all-files`.
@@ -150,13 +149,18 @@ verification environment removed; no HTTP handlers introduced.
 
 **Acceptance criteria:**
 
-- [ ] Health and stock endpoints return validated responses with items, total, limit, offset, and provenance.
-- [ ] Multiple pages, invalid bounds, empty/out-of-range pages, and stable ordering are tested.
-- [ ] Source dependency can be replaced in tests; request handling does not mutate shared data.
+- [x] Health and stock endpoints return validated responses with items, total, limit, offset, and provenance.
+- [x] Multiple pages, invalid bounds, empty/out-of-range pages, and stable ordering are tested.
+- [x] Source dependency can be replaced in tests; request handling does not mutate shared data.
 
 **Verification:**
 
-- [ ] uv run --locked pytest tests; baseline checks; HTTP tests use more than one page of data.
+- [x] uv run --locked pytest tests; baseline checks; HTTP tests use more than one page of data.
+
+All 40 tests pass. HTTP tests traverse 105 unsorted rows over three pages using
+a dependency override, check bounds/empty sources, and verify unchanged input.
+Baseline checks and wheel build pass. TestClient emits the upstream httpx
+deprecation warning; tests pass without suppressing it.
 
 **Dependencies:** 4a
 
@@ -171,12 +175,17 @@ verification environment removed; no HTTP handlers introduced.
 **Description:** Create a minimal React/TypeScript Vite build without unused template assets.
 
 **Acceptance criteria:**
-- [ ] Locked npm install works
-- [ ] production build passes
-- [ ] root page renders.
+- [x] Locked npm install works
+- [x] production build passes
+- [x] root page renders.
 
 **Verification:**
-- [ ] npm --prefix frontend ci; npm --prefix frontend run build.
+- [x] npm --prefix frontend ci; npm --prefix frontend run build.
+
+Verified with Node 24.14.1/npm 11.19.1. Production build type-checks with strict
+TypeScript, and browser assertions confirmed the page heading and sample label
+with no console errors. Browser session closed and verification server stopped.
+No template assets or API connection added; frontend CI follows in task 7.
 
 **Dependencies:** 4b
 
@@ -191,12 +200,18 @@ verification environment removed; no HTTP handlers introduced.
 **Description:** Add a typed feature API client and a screener container, leaving the app shell responsible only for page composition.
 
 **Acceptance criteria:**
-- [ ] Screener requests the paginated API through the development proxy.
-- [ ] Loading/error/empty states exist and stale requests cannot overwrite current results.
-- [ ] App composition is separate from screener request state.
+- [x] Screener requests the paginated API through the development proxy.
+- [x] Loading/error/empty states exist and stale requests cannot overwrite current results.
+- [x] App composition is separate from screener request state.
 
 **Verification:**
-- [ ] Frontend build; manually test desktop/mobile, API outage and empty response.
+- [x] Frontend build; manually test desktop/mobile, API outage and empty response.
+
+Browser assertions verified six real API rows through Vite, 375px layout without
+overflow, loading/empty/malformed-response states, API outage and recovery.
+A controlled fetch that ignored aborts resolved old requests after the newest
+result; the newest result stayed visible. Browser closed and both servers stopped.
+No dependencies added. Table and pagination controls remain task 6a.
 
 **Dependencies:** 5
 
