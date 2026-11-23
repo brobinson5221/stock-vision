@@ -1,7 +1,8 @@
 # Stock Vision task checklist
 
-Status: tasks 4b–6 merged in PR #5. Next: review this amendment, complete toolkit
-tasks T1-T4 in their own scoped PR, then resume tasks 6a–9. Copying is not yet implemented.
+Status: plan amendment PR #6 merged; toolkit inventory T1 complete. Next: copy
+the named T2/T3 batches, then route/verify in T4 within the toolkit PR.
+Skills/instructions have not yet been copied. Tasks 6a–9 follow toolkit merge.
 
 Baseline checks (from repository root): `uv run --locked ruff check .`,
 `uv run --locked ruff format --check .`, `uv run --locked pre-commit run --all-files`.
@@ -229,12 +230,20 @@ from the plan before copying. Preserve the four existing repository skills.
 
 **Acceptance criteria:**
 
-- [ ] `.agents/toolkit.md` records sources, versions/revisions, licenses, destinations, required support files, and external-tool prerequisites.
-- [ ] Review content and identify personal paths, cross-package references, conflicting rules, and any redistribution gaps.
-- [ ] Expand T2/T3 into named batches of about five files before copying; keep required skill support files together and record any larger atomic package.
+- [x] `.agents/toolkit.md` records sources, versions/revisions, licenses, destinations, required support files, and external-tool prerequisites.
+- [x] Review content and identify personal paths, cross-package references, conflicting rules, and any redistribution gaps.
+- [x] Expand T2/T3 into named batches of about five files before copying; keep required skill support files together and record any larger atomic package.
 
 **Verification:** Inspect source packages and license files; compare existing
 local copies; confirm each selected resource has a destination and source record.
+
+Inventory: [repository toolkit](../.agents/toolkit.md). Six skill sources and
+13 instruction snapshots are identified; four existing skill packages remain
+untouched. Source hashes pin snapshots with incomplete adaptation history.
+Planning/frontend cross-package references must be bundled locally. Readme
+attribution and Vercel packaging-version/notice details must be recorded in T2.
+Large web/React documentation packages are explicit atomic-copy exceptions;
+this inventory does not claim a full independent security audit or discovery test.
 
 **Dependencies:** 6; user-requested plan amendment.
 
@@ -268,6 +277,21 @@ copied helpers until their content and side effects have been reviewed.
 
 **Estimated scope:** Repeat focused batches; one coherent commit per package/batch.
 
+Execute these named batches with the shared acceptance/verification above and
+the exact source records in `.agents/toolkit.md`:
+
+| Batch | Package and required files | Scope |
+| --- | --- | --- |
+| T2a | planning-and-task-breakdown: entry, definition-of-done reference, LICENSE, SOURCE.md | 4 files |
+| T2b | conventional-branch: complete package with source/license/UI metadata | 4 files |
+| T2c | frontend-ui-engineering: entry, accessibility reference, LICENSE, SOURCE.md | 4 files |
+| T2d | create-readme: entry, upstream license, explicit adaptation/source note | 3 files; finish attribution first |
+| T2e | modern-web-guidance: entry plus 210 guides, LICENSE, SOURCE.md | 213 files; documented atomic-package exception |
+| T2f | react-best-practices: entry, compiled guide, 72 rules, UI metadata, license/source notice | 77 files; documented atomic-package exception |
+
+T2a–T2f run sequentially. Required supporting content stays in the same package;
+do not split a package into commits with broken references just to hit a count.
+
 **Commit intent:** `chore: vendor selected project skills` (scope per batch).
 
 ## Task T3: Add repository-local instruction files
@@ -296,6 +320,15 @@ and compare every copied file against its recorded source.
 **Files likely touched:** T1's named instruction batches and source records.
 
 **Estimated scope:** Repeat batches of about 3-5 files with focused commits.
+
+| Batch | Instruction topics (each `<topic>.instructions.md`) | Scope |
+| --- | --- | --- |
+| T3a | context-engineering, context7, self-explanatory-code-commenting, update-docs-on-code-change; shared MIT LICENSE | 5 files |
+| T3b | code-review-generic, markdown, github-actions-ci-cd-best-practices, codexer, html-css-style-color-guide | 5 files |
+| T3c | playwright-typescript, containerization-docker-best-practices, instructions, prompt | 4 files |
+
+T3a–T3c run sequentially with the shared acceptance/verification above. Preserve
+source attribution and adapt the global-router reference in context7.
 
 **Commit intent:** `docs: add project instruction guidance` (scope per batch).
 
