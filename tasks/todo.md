@@ -1,8 +1,8 @@
 # Stock Vision task checklist
 
-Status: toolkit T1-T3 complete in draft PR #7; six skill packages and 13
-instruction files are copied locally. Next: root routing and verification T4
-in the same PR. Tasks 6a–9 follow toolkit merge.
+Status: toolkit T1-T4 complete in PR #7, awaiting user review and merge. Six
+skill packages and 13 instructions are local and routed from AGENTS.md.
+Fresh-session discovery is explicitly unverified. Task 6a follows toolkit merge.
 
 Baseline checks (from repository root): `uv run --locked ruff check .`,
 `uv run --locked ruff format --check .`, `uv run --locked pre-commit run --all-files`.
@@ -354,14 +354,20 @@ AGENTS.md and update plan/README references to the actual local packages.
 
 **Acceptance criteria:**
 
-- [ ] AGENTS.md tells agents when to read each instruction and how to use local skills, without requiring global copies.
-- [ ] README/toolkit records explain prerequisites and deliberate update procedure.
-- [ ] Representative backend, frontend, CI, and documentation tasks resolve their guidance; unrelated tasks do not load the whole toolkit.
-- [ ] Fresh-session local skill discovery is tested where available, with any untested runtime behavior reported explicitly.
+- [x] AGENTS.md tells agents when to read each instruction and how to use local skills, without requiring global copies.
+- [x] README/toolkit records explain prerequisites and deliberate update procedure.
+- [x] Representative backend, frontend, CI, and documentation tasks resolve their guidance; unrelated tasks do not load the whole toolkit.
+- [x] Fresh-session local skill discovery is tested where available, with any untested runtime behavior reported explicitly.
 
 **Verification:** Run a focused local path/reference check; inspect representative
 task routing and missing-tool behavior; run baseline checks. A file existing is
 not proof of fresh-session discovery. Keep one open PR and leave merge to the user.
+
+Local link/route checks and all ten skill metadata validations passed. Manual
+routing walkthroughs cover backend, frontend, CI, README, instruction authoring,
+unrelated questions, and missing Context7. Fresh-session automatic discovery and
+selection were not tested; no new Codex session was started, and the inventory
+records this limit rather than inferring discovery from file presence.
 
 **Dependencies:** T3.
 
@@ -373,9 +379,9 @@ not proof of fresh-session discovery. Keep one open PR and leave merge to the us
 
 ## Checkpoint: after T1-T4
 
-- [ ] Selected skills and instructions are tracked locally with portable references and source/license records.
-- [ ] Required support resources resolve; runtime/tool prerequisites and unverified discovery are documented.
-- [ ] Baseline checks pass; submit the toolkit PR and wait for user merge before task 6a.
+- [x] Selected skills and instructions are tracked locally with portable references and source/license records.
+- [x] Required support resources resolve; runtime/tool prerequisites and unverified discovery are documented.
+- [x] Baseline checks pass; submit the toolkit PR and wait for user merge before task 6a.
 
 ## Task 6a: Display accessible paginated results
 

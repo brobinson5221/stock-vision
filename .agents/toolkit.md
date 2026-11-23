@@ -1,10 +1,11 @@
 # Repository agent toolkit inventory
 
-Inventory date: 2026-11-23. Status: T1-T3 complete; all six selected skill
-packages and all 13 selected instruction files are copied locally. The four
-existing skills are unchanged. Root routing and fresh-session discovery
-verification remain T4. Application tasks are unchanged; this inventory is not
-an independent security audit or proof of skill discovery.
+Inventory date: 2026-11-23. Status: T1-T4 complete in PR #7: six selected skill
+packages and 13 instruction files are copied and routed from root AGENTS.md.
+The four existing skills are unchanged. Local path/metadata checks and routing
+walkthroughs passed. Fresh-session automatic discovery/selection is unverified;
+no new Codex session was started for this task. Application code is unchanged.
+This inventory is not an independent security audit of all reference documents.
 
 ## Existing packages: preserve
 
@@ -119,7 +120,7 @@ Each destination is `.agents/instructions/<topic>.instructions.md`:
 The context7 and codexer copies now reference the Context7 workflow in
 root AGENTS.md. Instruction authoring guidance's personal-environment examples
 are context, not installation targets. Do not copy the full global instruction
-router into the project. Conditional links from project AGENTS.md are T4.
+router into the project. Project AGENTS.md now links the local copies conditionally.
 
 ## Named copying batches
 
@@ -198,5 +199,43 @@ contains the author's absolute home path. The copied license matches the verifie
 upstream MIT text already bundled with conventional-branch. Generic examples of
 user/global instruction scopes remain explanatory, not required installation paths.
 No application, global configuration, or existing skill files changed in T3.
-Root AGENTS.md conditional links and routing/discovery checks are the next task,
-T4; copying instruction files alone does not make Codex load them automatically.
+Root AGENTS.md conditional links and routing checks are covered by T4 below; copying instruction files alone is not proof of automatic loading.
+## T4 routing and integration verification
+
+Root [AGENTS.md](../AGENTS.md) conditionally links all 13 instruction topics and
+all ten local skill entrypoints. README and the implementation plan now point
+to the installed repository copies. No personal global copy is required by those
+links. Read matching guidance only; examples do not expand the requested work.
+
+The local reference check resolved all 45 links present at the first check,
+verified all routes stay inside the repository, and counted 13 instruction routes
+and ten skill entrypoints. All ten skills passed the structural validator. Root
+AGENTS.md is 8,305 bytes on disk. Final changed-document links were checked again
+before submission: all 46 local links resolved. Upstream vendored examples are not treated as project links.
+
+Manual routing walkthroughs (instruction/table interpretation, not an automated
+host-selection test):
+
+| Representative request | Expected local guidance | Scope check |
+| --- | --- | --- |
+| Implement a Python API change using a library | Context, code comments, documentation impact, codexer; Context7 when looking up that library | No browser-test or container instructions merely because the project is a web app |
+| Build the stock table in React | Frontend UI, local web guides, React review, HTML/CSS, code/documentation guidance | No Next.js/SWR/Tailwind installation implied |
+| Change a GitHub Actions workflow | GitHub Actions, code/documentation guidance, scoped review | No frontend guidance for unrelated YAML changes |
+| Refresh README | create-readme and Markdown | No complete toolkit load |
+| Edit project AGENTS.md | instructions, prompt, Markdown; context guidance where applicable | Preserve user authorization and existing project rules |
+| Explain a general programming concept without repository work | No task-specific toolkit required | Does not force library lookup or codebase inspection |
+| Context7 connection unavailable | Root documented official-source fallback and disclosure | Does not configure credentials or install MCP services |
+
+Only structural/path checks and these manual walkthroughs are verified here.
+Automatic discovery, implicit selection, and behavior in a fresh Codex session
+remain untested. Verify those in a fresh session for this checkout before
+claiming them; direct entrypoint links remain available for explicit use.
+
+Updates remain manual: identify the source snapshot, compare its changes and
+license/dependencies, preserve local adaptations and support files, validate
+metadata/links and matching-task behavior, then submit a focused PR. No global
+configuration, external tool installation, new agent chat, or application change
+is part of this task. Wait for user merge of toolkit PR #7 before task 6a.
+
+
+Final T4 checks passed: Ruff lint/format, 40 pytest tests, both legacy unittest cases, and pre-commit. The existing upstream httpx TestClient deprecation warning remains without test failures.
