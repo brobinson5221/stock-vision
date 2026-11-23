@@ -1,6 +1,7 @@
 # Stock Vision task checklist
 
-Status: PR #2 merged; task 4 complete. Tasks 4a onward remain in the sample-browsing PR.
+Status: PR #3 merged by the user after task 4. Task 4a complete on the next branch;
+tasks 4b–9 remain for the sample-browsing PR.
 
 Baseline checks (from repository root): `uv run --locked ruff check .`,
 `uv run --locked ruff format --check .`, `uv run --locked pre-commit run --all-files`.
@@ -117,13 +118,18 @@ environment removed. CI now runs pytest so the packaging test is included.
 
 **Acceptance criteria:**
 
-- [ ] Stock fields, nullable metrics, USD units and sample provenance have explicit contracts.
-- [ ] Sample data loads from the installed wheel without relying on the working directory.
-- [ ] Page inputs enforce default 50, maximum 100, positive limit, and nonnegative offset.
+- [x] Stock fields, nullable metrics, USD units and sample provenance have explicit contracts.
+- [x] Sample data loads from the installed wheel without relying on the working directory.
+- [x] Page inputs enforce default 50, maximum 100, positive limit, and nonnegative offset.
 
 **Verification:**
 
-- [ ] Unit schema/source tests and wheel package-data check pass.
+- [x] Unit schema/source tests and wheel package-data check pass.
+
+Twenty-four tests pass, including invalid and nonfinite metrics, null values,
+immutable records, malformed resource data, and page bounds. The rebuilt wheel
+loads all six synthetic rows in isolated Python outside the checkout. Temporary
+verification environment removed; no HTTP handlers introduced.
 
 **Dependencies:** 4
 
@@ -135,8 +141,8 @@ environment removed. CI now runs pytest so the packaging test is included.
 
 ## Checkpoint: after tasks 4-4a
 
-- [ ] Installed package and sample resource work outside the checkout.
-- [ ] Baseline checks and source/schema tests pass; continue within the same PR.
+- [x] Installed package and sample resource work outside the checkout.
+- [x] Baseline checks and source/schema tests pass; continue within the same PR.
 
 ## Task 4b: Expose paginated stock browsing
 

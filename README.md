@@ -5,6 +5,8 @@ frontend. The first version will use explicitly labeled sample data.
 
 Currently this repository provides an installable Python package, development
 tooling, and convention checks.
+The packaged sample source contains six fictional companies with synthetic USD
+values, explicitly labeled `synthetic-sample`; these are not market quotes.
 There is no runnable application, frontend, or Docker image yet. See the
 [implementation plan](tasks/plan.md) and [task checklist](tasks/todo.md).
 
@@ -40,7 +42,7 @@ uv run --locked pre-commit run --all-files
 uv run --locked python scripts/check_branch.py codex/feat/sample-screener
 ```
 
-Tests cover the branch validator and installed-package import. The existing
+Tests cover branch validation, package imports, sample data, and schema bounds. The existing
 branch tests also run with `uv run --locked python -m unittest discover -s tests -v`.
 Format with `uv run ruff format .`.
 Hooks can change files; review and stage those edits before retrying a commit.
@@ -52,6 +54,12 @@ The package lives in `src/stock_vision/` and installs during locked sync. Verify
 it with `uv run --locked python -c "import stock_vision"`. Build a source archive
 and wheel with `uv build`; outputs go to the ignored `dist/` directory. FastAPI
 and Uvicorn are runtime dependencies; pytest and httpx are development tools.
+
+`stock_vision.stocks.source.load_sample_stocks()` loads validated, immutable
+records from package resources, independent of the working directory. Price is
+USD per share and market capitalization is USD; unavailable market cap and P/E
+remain `None`. Pagination inputs default to limit 50 and offset 0, with limit
+1–100 and nonnegative offset. HTTP endpoints follow in the next task.
 
 Make focused Conventional Commits with working code and its tests together.
 Use `uv run cz commit` for prompts, or `git commit -m "ci: validate conventions"`.
