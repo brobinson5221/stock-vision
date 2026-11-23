@@ -1,6 +1,6 @@
 # Stock Vision task checklist
 
-Status: tasks 4b–5 complete in draft PR #5; tasks 6–9 remain in the same PR.
+Status: tasks 4b–6 complete in draft PR #5; tasks 6a–9 remain in the same PR.
 
 Baseline checks (from repository root): `uv run --locked ruff check .`,
 `uv run --locked ruff format --check .`, `uv run --locked pre-commit run --all-files`.
@@ -200,12 +200,18 @@ No template assets or API connection added; frontend CI follows in task 7.
 **Description:** Add a typed feature API client and a screener container, leaving the app shell responsible only for page composition.
 
 **Acceptance criteria:**
-- [ ] Screener requests the paginated API through the development proxy.
-- [ ] Loading/error/empty states exist and stale requests cannot overwrite current results.
-- [ ] App composition is separate from screener request state.
+- [x] Screener requests the paginated API through the development proxy.
+- [x] Loading/error/empty states exist and stale requests cannot overwrite current results.
+- [x] App composition is separate from screener request state.
 
 **Verification:**
-- [ ] Frontend build; manually test desktop/mobile, API outage and empty response.
+- [x] Frontend build; manually test desktop/mobile, API outage and empty response.
+
+Browser assertions verified six real API rows through Vite, 375px layout without
+overflow, loading/empty/malformed-response states, API outage and recovery.
+A controlled fetch that ignored aborts resolved old requests after the newest
+result; the newest result stayed visible. Browser closed and both servers stopped.
+No dependencies added. Table and pagination controls remain task 6a.
 
 **Dependencies:** 5
 

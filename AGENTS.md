@@ -8,7 +8,7 @@ Keep this guidance updated as the project grows.
 
 Stock Vision has an installable `src/stock_vision/` package and pytest tests,
 including standard-library unittest cases for its branch validator. A minimal
-React/TypeScript Vite frontend lives in `frontend/src/`; API connection and the
+React/TypeScript Vite frontend lives in `frontend/src/`; table controls and the
 container remain pending. Follow `tasks/plan.md` and `tasks/todo.md`.
 Keep Python tests separate in `tests/`.
 Create modules only when their task introduces behavior.
@@ -20,7 +20,9 @@ pagination to `stocks/service.py`, using the injectable sample source.
 Use Node.js 24 for frontend work. Run `npm --prefix frontend ci`, then
 `npm --prefix frontend run dev`. Validate with `npm --prefix frontend run build`
 (TypeScript checking plus Vite production build). Keep npm's lockfile with
-dependency changes. The frontend currently renders only a sample placeholder.
+dependency changes. `App.tsx` composes the page; `features/screener/` owns API
+validation and request state. Vite proxies `/api` to `127.0.0.1:8000`; run both
+processes for local verification. Preserve cancellation and stale-result guards.
 
 ## Setup and dependencies
 
