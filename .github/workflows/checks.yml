@@ -30,7 +30,30 @@ jobs:
         run: uv run --locked ruff format --check .
 
       - name: Run tests
-        run: uv run --locked pytest tests
+        run: uv run --locked pytest tests --junitxml=dist/pytest-results.xml
+
+      - name: Upload pytest results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: pytest-results
+          path: dist/pytest-results.xml
+
+      - name: Build wheel
+        run: uv build --wheel --out-dir "$RUNNER_TEMP/stock-vision-wheel"
+
+      - name: Smoke test installed wheel
+        working-directory: ${{ runner.temp }}
+        run: |
+          uv venv --python 3.15 wheel-env
+          uv pip install --python wheel-env/bin/python stock-vision-wheel/*.whl
+          wheel-env/bin/python -I - <<'PY'
+          from stock_vision.main import app
+          from stock_vision.stocks.source import load_sample_stocks
+
+          assert "/api/stocks" in app.openapi()["paths"]
+          assert load_sample_stocks().items
+          PY
 
       - name: Run hooks
         run: uv run --locked pre-commit run --all-files
@@ -44,3 +67,30 @@ jobs:
         run: |
           uv run --locked python scripts/check_branch.py "$PR_BRANCH"
           uv run --locked cz check --rev-range "$BASE_SHA..$HEAD_SHA"
+
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check lint
+        run: npm run lint
+
+      - name: Check types and build
+        run: npm run build

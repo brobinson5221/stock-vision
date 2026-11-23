@@ -7,7 +7,7 @@ Currently this repository provides an installable Python package, development
 tooling, and convention checks.
 The packaged sample source contains six fictional companies with synthetic USD
 values, explicitly labeled `synthetic-sample`; these are not market quotes.
-The sample API and connected frontend run locally; the paginated table and Docker
+The sample API and paginated stock table run locally. Browser tests and Docker
 packaging are still pending. See the
 [implementation plan](tasks/plan.md) and [task checklist](tasks/todo.md).
 
@@ -86,19 +86,22 @@ npm --prefix frontend run dev
 
 Keep the sample API running on `127.0.0.1:8000` in another terminal, then open the
 local URL printed by Vite. Its development proxy forwards `/api` requests to the
-backend. The screener displays the first page as a simple stock list with
-loading, empty, and retryable error states. Reload cancels the previous request;
-late responses cannot replace current results. Table/pagination controls follow
-in task 6a.
+backend. The screener displays a table with synthetic-data provenance, USD prices
+and market capitalization, and explicit unavailable metrics. Previous/Next
+controls browse 50-row pages, preserve the API query, announce result ranges,
+and disable invalid navigation. On narrow screens, focus the table region and
+use arrow keys to scroll horizontally; row and column headers stay visible.
+Loading, empty, and retryable error states remain available. Reload cancels the
+previous request; late responses cannot replace current results.
 
 ```sh
+npm --prefix frontend run lint
 npm --prefix frontend run build
 npm --prefix frontend run preview
 ```
 
 The build runs strict TypeScript checking and writes static assets to
 `frontend/dist/`. Preview serves those assets locally for verification.
-Frontend CI will be added in task 7.
 
 Make focused Conventional Commits with working code and its tests together.
 Use `uv run cz commit` for prompts, or `git commit -m "ci: validate conventions"`.
@@ -112,7 +115,11 @@ reviewable within the PR. Follow the boundaries in the task checklist.
 ## GitHub verification
 
 The [Checks workflow](.github/workflows/checks.yml) runs locked installation,
-Ruff, pytest tests, and existing pre-commit hooks on pushes and PRs.
+Ruff, pytest, and existing pre-commit hooks on pushes and PRs. It also builds and
+installs a wheel outside the checkout to verify the API import and packaged sample
+data. The frontend job uses Node.js 24 and `npm ci` before linting, checking types,
+and building. Download the `pytest-results` artifact from the workflow run for
+the JUnit report, including when tests fail.
 On PRs it also validates the branch name and every commit in the PR base-to-head
 range with Commitizen. The [PR title workflow](.github/workflows/pr-title.yml)
 checks Conventional Commit titles.
