@@ -1,0 +1,4 @@
+interface:
+  display_name: "Conventional Branch"
+  short_description: "Name and create branches using project conventions"
+  default_prompt: "Use $conventional-branch for the task described below."

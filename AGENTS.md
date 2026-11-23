@@ -96,3 +96,45 @@ Prefer Context7 over web search even for familiar APIs.
 General programming concepts, business-logic debugging, and refactoring or review
 without library-specific questions do not need Context7. If it is unavailable,
 use official documentation and disclose the fallback.
+
+## Repository-local guidance
+
+Use the linked project copies for matching work unless the user specifies another
+source. Read only applicable instruction files and skill entrypoints, then any
+supporting references that task needs. Do not load the entire toolkit for every
+request. These files supplement project rules and do not grant tool access or
+authorization. Global copies are not required.
+
+| When working on | Read and follow |
+| --- | --- |
+| Codebase context or changes across files | [context-engineering](.agents/instructions/context-engineering.instructions.md) |
+| Library/tool documentation through Context7 | [context7](.agents/instructions/context7.instructions.md), with the workflow above |
+| Code and its comments | [self-explanatory-code-commenting](.agents/instructions/self-explanatory-code-commenting.instructions.md) |
+| Application code, interfaces, dependencies, or configuration | [update-docs-on-code-change](.agents/instructions/update-docs-on-code-change.instructions.md) |
+| A scoped diff, PR, commit, or source review | [code-review-generic](.agents/instructions/code-review-generic.instructions.md) |
+| Markdown editing or review | [markdown](.agents/instructions/markdown.instructions.md) |
+| GitHub Actions workflows | [github-actions-ci-cd-best-practices](.agents/instructions/github-actions-ci-cd-best-practices.instructions.md) |
+| Python library research or implementations using it | [codexer](.agents/instructions/codexer.instructions.md) |
+| Browser HTML/CSS, styling, or colors | [html-css-style-color-guide](.agents/instructions/html-css-style-color-guide.instructions.md) |
+| TypeScript Playwright specs, fixtures, or page objects | [playwright-typescript](.agents/instructions/playwright-typescript.instructions.md) |
+| Dockerfiles, builds, Compose, or container configuration | [containerization-docker-best-practices](.agents/instructions/containerization-docker-best-practices.instructions.md) |
+| AGENTS.md or custom instruction files | [instructions](.agents/instructions/instructions.instructions.md) |
+| Reusable prompts or instruction authoring | [prompt](.agents/instructions/prompt.instructions.md) |
+
+| Task | Local skill entrypoint |
+| --- | --- |
+| Plan or revise multi-step work | [planning-and-task-breakdown](.agents/skills/planning-and-task-breakdown/SKILL.md) |
+| Name, validate, or create a branch | [conventional-branch](.agents/skills/conventional-branch/SKILL.md) |
+| Write a commit message | [commit-message-storyteller](.agents/skills/commit-message-storyteller/SKILL.md) |
+| Review code/configuration changes | [ponytail-review](.agents/skills/ponytail-review/SKILL.md) |
+| Prepare a PR body or submission | [pr](.agents/skills/pr/SKILL.md), [create-pr](.agents/skills/create-pr/SKILL.md) |
+| Build or modify frontend UI | [frontend-ui-engineering](.agents/skills/frontend-ui-engineering/SKILL.md) |
+| Browser HTML/CSS/JavaScript behavior | [modern-web-guidance](.agents/skills/modern-web-guidance/SKILL.md); use bundled guides first |
+| React component implementation or review | [react-best-practices](.agents/skills/react-best-practices/SKILL.md); apply React/Vite-relevant rules |
+| Create or refresh README | [create-readme](.agents/skills/create-readme/SKILL.md) |
+
+See [toolkit sources and verification](.agents/toolkit.md) for licenses, snapshots,
+prerequisites, and update procedure. If a required tool is unavailable, report it
+and use a documented fallback where possible; do not silently install tools or
+change global configuration. File/link checks do not prove automatic skill
+discovery or selection in a fresh session.

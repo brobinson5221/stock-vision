@@ -13,8 +13,9 @@ Tasks 1-6, including 4a/4b, are implemented: the Python 3.15 src package exposes
 a sample browsing API, and the React/TypeScript frontend requests its first page.
 Forty Python tests pass; locked frontend install/build and request-state browser
 checks have passed locally. CI checks Python tests, Ruff, hooks, branch/commit
-conventions, and PR titles. Table controls, frontend/browser CI, the local toolkit
-below, and Docker packaging remain pending.
+conventions, and PR titles. Table controls, frontend/browser CI, and Docker
+packaging remain pending. The local toolkit is copied and routed in PR #7;
+fresh-session automatic discovery remains unverified.
 
 ## Architecture decisions
 
@@ -156,7 +157,7 @@ that those tools or scripts already exist.
 | 0 | Plan and review | This plan | Architecture plan; executable task checklist |
 | 1 | Development conventions | 1-3 | Project identity; commit/branch CI; contributor guide |
 | 2 | Sample browsing foundations (merged PRs #3-5) | 4-6, including 4a/4b | Package; source; API; connected frontend |
-| 3 | Repository toolkit (after this amendment merges) | T1-T4 | Inventory; skill packages; instruction batches; routing verification |
+| 3 | Repository toolkit (PR #7) | T1-T4 | Inventory; skill packages; instruction batches; routing verification |
 | 4 | Complete sample browsing | 6a-9 | Paginated table; source/browser CI; sample runbook |
 | 5 | Screen stocks | 10-12, including 10a/11a/12a | Search/sector slice; numeric filter slice; sorting slice |
 | 6 | Run the verified container | 13-15 | Container + smoke check; Docker CI; runbook |
@@ -170,9 +171,11 @@ task identifiers. Finish each API-to-UI feature pair before beginning the next.
 
 Ship repository-local copies of the selected skills and instructions below so
 a checkout carries its working guidance. Tasks T1-T4 in [todo.md](todo.md) are
-the next work, before task 6a. PR #5 has merged; submit this amendment for review,
-then complete the toolkit in the next scoped PR before resuming sample browsing.
-Existing application tasks stay complete; this does not require redoing them.
+implemented in toolkit PR #7, following merged plan amendment #6. Root
+[AGENTS.md](../AGENTS.md) routes matching tasks to local files. Toolkit file,
+metadata, and routing checks are recorded in [the inventory](../.agents/toolkit.md);
+fresh-session automatic discovery remains unverified. Wait for user merge before
+task 6a. Existing application tasks stay complete.
 
 Keep skills in `.agents/skills/<name>/` and instructions in
 `.agents/instructions/`. Preserve the four existing repository skills and their
@@ -198,8 +201,8 @@ Vendoring their guidance does not provision tools or grant permissions.
 
 | When | Resource | Purpose |
 | --- | --- | --- |
-| Revising the plan | Planned `.agents/skills/planning-and-task-breakdown/SKILL.md` | Keep tasks, dependencies, acceptance criteria, and PR gates aligned. |
-| Starting a branch | Planned `.agents/skills/conventional-branch/SKILL.md` | Apply this project's `codex/<type>/<description>` policy and validate the Git ref. |
+| Revising the plan | [planning-and-task-breakdown](../.agents/skills/planning-and-task-breakdown/SKILL.md) | Keep tasks, dependencies, acceptance criteria, and PR gates aligned. |
+| Starting a branch | [conventional-branch](../.agents/skills/conventional-branch/SKILL.md) | Apply this project's `codex/<type>/<description>` policy and validate the Git ref. |
 | Each commit | [commit-message-storyteller](../.agents/skills/commit-message-storyteller/SKILL.md) | Base a coherent Conventional Commit on the staged diff. |
 | Reviewing code/configuration | [ponytail-review](../.agents/skills/ponytail-review/SKILL.md) | Check connected code for defects, missing tests, and unnecessary complexity. |
 | Each PR | [pr](../.agents/skills/pr/SKILL.md) and [create-pr](../.agents/skills/create-pr/SKILL.md) | Provide evidence, follow latest CI, and leave merging to the user. |
@@ -209,7 +212,7 @@ Apply `context-engineering.instructions.md` when gathering context and
 `self-explanatory-code-commenting.instructions.md` and
 `update-docs-on-code-change.instructions.md`; scoped reviews use
 `code-review-generic.instructions.md`. Markdown edits use
-`markdown.instructions.md`. All filenames in this paragraph target the planned
+`markdown.instructions.md`. All filenames in this paragraph resolve in the local
 `.agents/instructions/` directory. Documentation-only reviews need link and command
 accuracy checks, not an application test suite.
 
@@ -219,12 +222,12 @@ accuracy checks, not an application test suite.
 | --- | --- | --- |
 | Conventions, tasks 1-3 | `github-actions-ci-cd-best-practices.instructions.md` | Branch/commit checks, hooks in CI, action pins, and existing required checks. |
 | Backend, task 4 and tasks 10-12 | `codexer.instructions.md` plus Context7 guidance | Python/FastAPI dependencies, response contracts, validation, and focused tests. |
-| Frontend, tasks 5-6a and tasks 10-12 | Planned local skills `frontend-ui-engineering`, `modern-web-guidance`, `react-best-practices`; `html-css-style-color-guide.instructions.md` | Accessible tables and controls, responsive layout, contrast, request states, and React review. |
+| Frontend, tasks 5-6a and tasks 10-12 | Local skills `frontend-ui-engineering`, `modern-web-guidance`, `react-best-practices`; `html-css-style-color-guide.instructions.md` | Accessible tables and controls, responsive layout, contrast, request states, and React review. |
 | Source and browser CI, tasks 7-8 and tasks 10-12 | `github-actions-ci-cd-best-practices.instructions.md`; `playwright-typescript.instructions.md` | Real API/browser verification, resilient locators, and diagnostic artifacts. |
 | Container, tasks 13-14 | `containerization-docker-best-practices.instructions.md`; GitHub Actions guidance | Build the final image, verify startup and runtime permissions, and retain failure logs. |
-| Documentation, tasks 3, 9, 15 | Planned `.agents/skills/create-readme/SKILL.md`; Markdown and documentation-impact guidance | Keep setup, run commands, and limitations consistent with implemented behavior. |
+| Documentation, tasks 3, 9, 15 | [create-readme](../.agents/skills/create-readme/SKILL.md); Markdown and documentation-impact guidance | Keep setup, run commands, and limitations consistent with implemented behavior. |
 
-Instruction filenames in the table target `.agents/instructions/` after T3.
+Instruction filenames in the table resolve under `.agents/instructions/`.
 If AGENTS.md itself is edited, also load `instructions.instructions.md` and
 `prompt.instructions.md`, as required by the user's instruction routing.
 Use only the relevant parts of broad skills: no speculative infrastructure,

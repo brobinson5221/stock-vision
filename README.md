@@ -126,3 +126,21 @@ uv run --locked cz check --rev-range origin/main..HEAD
 For an observed failure, reproduce it and add a focused regression check when
 coverage is missing. Extend existing CI where it fits; add a job only for a
 distinct unchecked boundary. Inspect the latest PR checks before review.
+
+## Repository agent guidance
+
+[AGENTS.md](AGENTS.md) routes tasks to the checked-in skills and instructions in
+`.agents/`; matching guidance can be read directly from those repository-relative
+links without personal global copies. Use only the files relevant to the task.
+
+The [toolkit inventory](.agents/toolkit.md) records source snapshots, licenses,
+adaptations, prerequisites, and verification limits. Updates are deliberate:
+compare against a named source snapshot, preserve local edits and required support
+files, review license/dependency changes, validate references and skill metadata,
+then submit focused commits through the normal PR workflow. No automatic sync.
+
+Guidance does not install or authenticate external tools. Context7 needs its MCP
+connection; use official documentation and disclose the fallback if unavailable.
+Web guidance uses bundled references first; its optional networked CLI is not
+installed by this repository. Verify skill availability in a fresh Codex session
+separately from file/link validation.

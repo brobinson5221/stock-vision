@@ -1,7 +1,8 @@
 # Stock Vision task checklist
 
-Status: tasks 4b–6 merged in PR #5. Next: review this amendment, complete toolkit
-tasks T1-T4 in their own scoped PR, then resume tasks 6a–9. Copying is not yet implemented.
+Status: toolkit T1-T4 complete in PR #7, awaiting user review and merge. Six
+skill packages and 13 instructions are local and routed from AGENTS.md.
+Fresh-session discovery is explicitly unverified. Task 6a follows toolkit merge.
 
 Baseline checks (from repository root): `uv run --locked ruff check .`,
 `uv run --locked ruff format --check .`, `uv run --locked pre-commit run --all-files`.
@@ -229,12 +230,20 @@ from the plan before copying. Preserve the four existing repository skills.
 
 **Acceptance criteria:**
 
-- [ ] `.agents/toolkit.md` records sources, versions/revisions, licenses, destinations, required support files, and external-tool prerequisites.
-- [ ] Review content and identify personal paths, cross-package references, conflicting rules, and any redistribution gaps.
-- [ ] Expand T2/T3 into named batches of about five files before copying; keep required skill support files together and record any larger atomic package.
+- [x] `.agents/toolkit.md` records sources, versions/revisions, licenses, destinations, required support files, and external-tool prerequisites.
+- [x] Review content and identify personal paths, cross-package references, conflicting rules, and any redistribution gaps.
+- [x] Expand T2/T3 into named batches of about five files before copying; keep required skill support files together and record any larger atomic package.
 
 **Verification:** Inspect source packages and license files; compare existing
 local copies; confirm each selected resource has a destination and source record.
+
+Inventory: [repository toolkit](../.agents/toolkit.md). Six skill sources and
+13 instruction snapshots are identified; four existing skill packages remain
+untouched. Source hashes pin snapshots with incomplete adaptation history.
+Planning/frontend cross-package references must be bundled locally. Readme
+attribution and Vercel packaging-version/notice details must be recorded in T2.
+Large web/React documentation packages are explicit atomic-copy exceptions;
+this inventory does not claim a full independent security audit or discovery test.
 
 **Dependencies:** 6; user-requested plan amendment.
 
@@ -254,19 +263,42 @@ Add `planning-and-task-breakdown`, `conventional-branch`, `frontend-ui-engineeri
 
 **Acceptance criteria:**
 
-- [ ] Each package includes SKILL.md and the support files it actually requires, with license/attribution preserved.
-- [ ] Personal absolute paths are adapted; required references resolve locally or name an explicit external prerequisite.
-- [ ] No unrelated skills, plugin caches, credentials, machine config, or optional agent registrations are copied.
+- [x] Each package includes SKILL.md and the support files it actually requires, with license/attribution preserved.
+- [x] Personal absolute paths are adapted; required references resolve locally or name an explicit external prerequisite.
+- [x] No unrelated skills, plugin caches, credentials, machine config, or optional agent registrations are copied.
 
 **Verification:** Compare each package with its recorded source; inspect all
 adaptations; validate metadata, links, and referenced scripts. Do not execute
 copied helpers until their content and side effects have been reviewed.
+
+Completed T2a–T2f in six focused commits. All six entrypoints pass the structural
+skill validator; 305 copied package files include required references, licenses,
+and source notices. Supporting files were byte-compared against their source
+snapshots. The existing four skills are unchanged. Web-guidance CLI commands were not run;
+web guidance is local-first with its optional CLI version pinned. Root routing
+and fresh-session discovery remain T4. Full Git whitespace checking flags
+inherited upstream document formatting; authored entrypoints/source notes pass.
 
 **Dependencies:** T1.
 
 **Files likely touched:** T1's named batches under `.agents/skills/` and source records.
 
 **Estimated scope:** Repeat focused batches; one coherent commit per package/batch.
+
+Execute these named batches with the shared acceptance/verification above and
+the exact source records in `.agents/toolkit.md`:
+
+| Batch | Package and required files | Scope |
+| --- | --- | --- |
+| T2a | planning-and-task-breakdown: entry, definition-of-done reference, LICENSE, SOURCE.md | 4 files |
+| T2b | conventional-branch: complete package with source/license/UI metadata | 4 files |
+| T2c | frontend-ui-engineering: entry, accessibility reference, LICENSE, SOURCE.md | 4 files |
+| T2d | create-readme: entry, upstream license, explicit adaptation/source note | 3 files; finish attribution first |
+| T2e | modern-web-guidance: entry plus 210 guides, LICENSE, SOURCE.md | 213 files; documented atomic-package exception |
+| T2f | react-best-practices: entry, compiled guide, 72 rules, UI metadata, license/source notice | 77 files; documented atomic-package exception |
+
+T2a–T2f run sequentially. Required supporting content stays in the same package;
+do not split a package into commits with broken references just to hit a count.
 
 **Commit intent:** `chore: vendor selected project skills` (scope per batch).
 
@@ -284,18 +316,34 @@ and `prompt` (each named `<topic>.instructions.md`).
 
 **Acceptance criteria:**
 
-- [ ] All selected instruction files and required references are present and portable.
-- [ ] Existing project conventions and user authorization boundaries remain intact.
-- [ ] Source records explain adaptations; files do not require the author's home directory or duplicate the full global router.
+- [x] All selected instruction files and required references are present and portable.
+- [x] Existing project conventions and user authorization boundaries remain intact.
+- [x] Source records explain adaptations; files do not require the author's home directory or duplicate the full global router.
 
 **Verification:** Check paths and attribution, review conflicting instructions,
 and compare every copied file against its recorded source.
+
+Completed T3a–T3c as three focused commits: 13 instructions and a shared upstream
+MIT license. Source hashes matched the inventory before copying. Eleven files
+are byte-identical; context7 and codexer only replace global Context7 references
+with root AGENTS.md. Expected-content comparisons, attribution, personal-path,
+file-count, and license checks passed. Root routing remains T4; files are not
+claimed automatically loaded merely because they exist.
 
 **Dependencies:** T2.
 
 **Files likely touched:** T1's named instruction batches and source records.
 
 **Estimated scope:** Repeat batches of about 3-5 files with focused commits.
+
+| Batch | Instruction topics (each `<topic>.instructions.md`) | Scope |
+| --- | --- | --- |
+| T3a | context-engineering, context7, self-explanatory-code-commenting, update-docs-on-code-change; shared MIT LICENSE | 5 files |
+| T3b | code-review-generic, markdown, github-actions-ci-cd-best-practices, codexer, html-css-style-color-guide | 5 files |
+| T3c | playwright-typescript, containerization-docker-best-practices, instructions, prompt | 4 files |
+
+T3a–T3c run sequentially with the shared acceptance/verification above. Preserve
+source attribution and adapt the global-router reference in context7.
 
 **Commit intent:** `docs: add project instruction guidance` (scope per batch).
 
@@ -306,14 +354,20 @@ AGENTS.md and update plan/README references to the actual local packages.
 
 **Acceptance criteria:**
 
-- [ ] AGENTS.md tells agents when to read each instruction and how to use local skills, without requiring global copies.
-- [ ] README/toolkit records explain prerequisites and deliberate update procedure.
-- [ ] Representative backend, frontend, CI, and documentation tasks resolve their guidance; unrelated tasks do not load the whole toolkit.
-- [ ] Fresh-session local skill discovery is tested where available, with any untested runtime behavior reported explicitly.
+- [x] AGENTS.md tells agents when to read each instruction and how to use local skills, without requiring global copies.
+- [x] README/toolkit records explain prerequisites and deliberate update procedure.
+- [x] Representative backend, frontend, CI, and documentation tasks resolve their guidance; unrelated tasks do not load the whole toolkit.
+- [x] Fresh-session local skill discovery is tested where available, with any untested runtime behavior reported explicitly.
 
 **Verification:** Run a focused local path/reference check; inspect representative
 task routing and missing-tool behavior; run baseline checks. A file existing is
 not proof of fresh-session discovery. Keep one open PR and leave merge to the user.
+
+Local link/route checks and all ten skill metadata validations passed. Manual
+routing walkthroughs cover backend, frontend, CI, README, instruction authoring,
+unrelated questions, and missing Context7. Fresh-session automatic discovery and
+selection were not tested; no new Codex session was started, and the inventory
+records this limit rather than inferring discovery from file presence.
 
 **Dependencies:** T3.
 
@@ -325,9 +379,9 @@ not proof of fresh-session discovery. Keep one open PR and leave merge to the us
 
 ## Checkpoint: after T1-T4
 
-- [ ] Selected skills and instructions are tracked locally with portable references and source/license records.
-- [ ] Required support resources resolve; runtime/tool prerequisites and unverified discovery are documented.
-- [ ] Baseline checks pass; submit the toolkit PR and wait for user merge before task 6a.
+- [x] Selected skills and instructions are tracked locally with portable references and source/license records.
+- [x] Required support resources resolve; runtime/tool prerequisites and unverified discovery are documented.
+- [x] Baseline checks pass; submit the toolkit PR and wait for user merge before task 6a.
 
 ## Task 6a: Display accessible paginated results
 
