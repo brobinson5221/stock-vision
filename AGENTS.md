@@ -7,14 +7,20 @@ Discover source layout, run commands, and test commands from the current project
 Keep this guidance updated as the project grows.
 
 Stock Vision has an installable `src/stock_vision/` package and pytest tests,
-including standard-library unittest cases for its branch validator. There is no
-frontend or container yet. Follow `tasks/plan.md` and `tasks/todo.md`.
-Keep tests separate in `tests/`; the planned frontend lives in `frontend/src/`.
+including standard-library unittest cases for its branch validator. A minimal
+React/TypeScript Vite frontend lives in `frontend/src/`; API connection and the
+container remain pending. Follow `tasks/plan.md` and `tasks/todo.md`.
+Keep Python tests separate in `tests/`.
 Create modules only when their task introduces behavior.
 
 Run the sample API with `uv run --locked uvicorn stock_vision.main:app --reload`.
 Health is `/api/health`; browsing is `/api/stocks`. Routes delegate ordering and
 pagination to `stocks/service.py`, using the injectable sample source.
+
+Use Node.js 24 for frontend work. Run `npm --prefix frontend ci`, then
+`npm --prefix frontend run dev`. Validate with `npm --prefix frontend run build`
+(TypeScript checking plus Vite production build). Keep npm's lockfile with
+dependency changes. The frontend currently renders only a sample placeholder.
 
 ## Setup and dependencies
 

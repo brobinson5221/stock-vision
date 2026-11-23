@@ -1,7 +1,6 @@
 # Stock Vision task checklist
 
-Status: PR #4 merged by the user after task 4a. Task 4b complete on the next branch;
-tasks 5–9 remain for the sample-browsing PR.
+Status: tasks 4b–5 complete in draft PR #5; tasks 6–9 remain in the same PR.
 
 Baseline checks (from repository root): `uv run --locked ruff check .`,
 `uv run --locked ruff format --check .`, `uv run --locked pre-commit run --all-files`.
@@ -176,12 +175,17 @@ deprecation warning; tests pass without suppressing it.
 **Description:** Create a minimal React/TypeScript Vite build without unused template assets.
 
 **Acceptance criteria:**
-- [ ] Locked npm install works
-- [ ] production build passes
-- [ ] root page renders.
+- [x] Locked npm install works
+- [x] production build passes
+- [x] root page renders.
 
 **Verification:**
-- [ ] npm --prefix frontend ci; npm --prefix frontend run build.
+- [x] npm --prefix frontend ci; npm --prefix frontend run build.
+
+Verified with Node 24.14.1/npm 11.19.1. Production build type-checks with strict
+TypeScript, and browser assertions confirmed the page heading and sample label
+with no console errors. Browser session closed and verification server stopped.
+No template assets or API connection added; frontend CI follows in task 7.
 
 **Dependencies:** 4b
 

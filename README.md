@@ -7,7 +7,8 @@ Currently this repository provides an installable Python package, development
 tooling, and convention checks.
 The packaged sample source contains six fictional companies with synthetic USD
 values, explicitly labeled `synthetic-sample`; these are not market quotes.
-The sample API runs locally; frontend and Docker image are still pending. See the
+The sample API and frontend placeholder run locally; API connection and Docker
+packaging are still pending. See the
 [implementation plan](tasks/plan.md) and [task checklist](tasks/todo.md).
 
 ## Set up locally
@@ -72,6 +73,28 @@ Open `http://127.0.0.1:8000/docs` for the API explorer.
 returns `items`, `total`, `limit`, `offset`, `provenance`, and `currency`.
 Results are ordered by symbol before pagination; out-of-range pages are empty
 with the total preserved. Invalid page bounds return HTTP 422.
+
+## Run the frontend
+
+Use Node.js 24 and npm (verified with Node 24.14.1 and npm 11.19.1).
+From the repository root:
+
+```sh
+npm --prefix frontend ci
+npm --prefix frontend run dev
+```
+
+Open the local URL printed by Vite. The root page currently displays a
+sample-data placeholder; it does not request stocks yet.
+
+```sh
+npm --prefix frontend run build
+npm --prefix frontend run preview
+```
+
+The build runs strict TypeScript checking and writes static assets to
+`frontend/dist/`. Preview serves those assets locally for verification.
+Frontend CI will be added in task 7.
 
 Make focused Conventional Commits with working code and its tests together.
 Use `uv run cz commit` for prompts, or `git commit -m "ci: validate conventions"`.
