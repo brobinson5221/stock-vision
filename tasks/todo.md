@@ -1,6 +1,6 @@
 # Stock Vision task checklist
 
-Status: tasks 1-3 complete; PR #2 awaits user review and merge before task 4.
+Status: PR #2 merged; task 4 complete. Tasks 4a onward remain in the sample-browsing PR.
 
 Baseline checks (from repository root): `uv run --locked ruff check .`,
 `uv run --locked ruff format --check .`, `uv run --locked pre-commit run --all-files`.
@@ -90,11 +90,18 @@ There is no application build yet. Continue with task 4 only after PR #2 merges.
 **Description:** Configure the root project to install `src/stock_vision` with a build backend, FastAPI runtime dependencies, and pytest tooling.
 
 **Acceptance criteria:**
-- [ ] Locked install imports `stock_vision` without path overrides.
-- [ ] Wheel builds and imports in a clean environment outside the checkout.
+- [x] Locked install imports `stock_vision` without path overrides.
+- [x] Wheel builds and imports in a clean environment outside the checkout.
 
 **Verification:**
-- [ ] uv sync --locked; uv build; clean-environment wheel import check; baseline checks.
+- [x] uv sync --locked; uv build; clean-environment wheel import check; baseline checks.
+
+Packaging smoke test first failed with ModuleNotFoundError, then passed after
+adding the src package and uv_build backend. All three pytest tests and both
+legacy unittest cases pass. The wheel installed in a temporary Python 3.15
+environment outside the checkout; isolated Python imported stock_vision from
+that environment's site-packages, along with FastAPI and Uvicorn. Temporary
+environment removed. CI now runs pytest so the packaging test is included.
 
 **Dependencies:** 3
 

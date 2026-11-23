@@ -6,11 +6,11 @@ Read `README.md`, `pyproject.toml`, and `.github/workflows/` before making chang
 Discover source layout, run commands, and test commands from the current project.
 Keep this guidance updated as the project grows.
 
-Stock Vision currently has development tooling and standard-library unittest
-tests for its branch validator, with no application or container yet. Follow
-`tasks/plan.md` and `tasks/todo.md`. The planned application uses an installable
-`src/stock_vision/` package, separate `tests/`, and `frontend/src/`; create modules
-only when their task introduces behavior.
+Stock Vision has an installable `src/stock_vision/` package and pytest tests,
+including standard-library unittest cases for its branch validator. There is no
+runnable API or container yet. Follow `tasks/plan.md` and `tasks/todo.md`.
+Keep tests separate in `tests/`; the planned frontend lives in `frontend/src/`.
+Create modules only when their task introduces behavior.
 
 ## Setup and dependencies
 
@@ -34,6 +34,7 @@ Follow the Ruff configuration in `pyproject.toml`. Before submitting changes:
 uv run --locked ruff check .
 uv run --locked ruff format --check .
 uv run --locked python -m unittest discover -s tests -v
+uv run --locked pytest tests
 uv run --locked pre-commit run --all-files
 ```
 
@@ -58,7 +59,10 @@ at a time at the plan's PR boundaries; leave merging to the user. After it merge
 fetch updated main before starting the next PR. Use the repository `pr` and
 `create-pr` skills for submissions and review the scoped diff with `ponytail-review`.
 
-The workflows check Ruff, unittest, hooks, PR branch names, all PR commit messages,
+Build the package with `uv build`. Verify wheel imports in a clean environment
+outside the checkout when changing packaging; never add source-path overrides.
+
+The workflows check Ruff, pytest, hooks, PR branch names, all PR commit messages,
 and PR titles. Locally validate commits with
 `uv run --locked cz check --rev-range origin/main..HEAD` after fetching main.
 Use squash merging with the PR title as the commit message. Verify current
