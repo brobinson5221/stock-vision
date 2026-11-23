@@ -33,3 +33,9 @@ class StockDataset(BaseModel):
     provenance: Literal["synthetic-sample"] = "synthetic-sample"
     currency: Literal["USD"] = "USD"
     items: tuple[Stock, ...]
+
+
+class StockPage(StockDataset):
+    total: int = Field(ge=0)
+    limit: int = Field(gt=0, le=100)
+    offset: int = Field(ge=0)
