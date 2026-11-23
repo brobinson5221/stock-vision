@@ -2,12 +2,21 @@
 name = "stock-vision"
 version = "0.1.0"
 requires-python = ">=3.15"
-dependencies = []
+dependencies = [
+    "fastapi>=0.165.0",
+    "uvicorn>=0.54.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.13.1,<0.14"]
+build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
     "commitizen>=4.19.3",
+    "httpx>=0.28.1",
     "pre-commit>=4.7.0",
+    "pytest>=9.2.0",
     "ruff>=0.17.4",
 ]
 
