@@ -1,7 +1,11 @@
 # ruff: noqa: INP001, PT009 -- Standard-library unittest; no test package required.
 import unittest
+from pathlib import Path
+from runpy import run_path
 
-from scripts.check_branch import is_valid_branch
+is_valid_branch = run_path(str(Path(__file__).resolve().parents[1] / "scripts/check_branch.py"))[
+    "is_valid_branch"
+]
 
 
 class BranchTests(unittest.TestCase):
