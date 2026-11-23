@@ -1,6 +1,7 @@
 # Stock Vision task checklist
 
-Status: tasks 4b–6 complete in draft PR #5; tasks 6a–9 remain in the same PR.
+Status: tasks 4b–6 merged in PR #5. Next: review this amendment, complete toolkit
+tasks T1-T4 in their own scoped PR, then resume tasks 6a–9. Copying is not yet implemented.
 
 Baseline checks (from repository root): `uv run --locked ruff check .`,
 `uv run --locked ruff format --check .`, `uv run --locked pre-commit run --all-files`.
@@ -221,6 +222,113 @@ No dependencies added. Table and pagination controls remain task 6a.
 
 **Commit intent:** `feat: connect the screener feature to the stock API`.
 
+## Task T1: Inventory the repository toolkit
+
+**Description:** Inventory the selected skill packages and instruction sources
+from the plan before copying. Preserve the four existing repository skills.
+
+**Acceptance criteria:**
+
+- [ ] `.agents/toolkit.md` records sources, versions/revisions, licenses, destinations, required support files, and external-tool prerequisites.
+- [ ] Review content and identify personal paths, cross-package references, conflicting rules, and any redistribution gaps.
+- [ ] Expand T2/T3 into named batches of about five files before copying; keep required skill support files together and record any larger atomic package.
+
+**Verification:** Inspect source packages and license files; compare existing
+local copies; confirm each selected resource has a destination and source record.
+
+**Dependencies:** 6; user-requested plan amendment.
+
+**Files likely touched:** `.agents/toolkit.md`, `tasks/todo.md`.
+
+**Estimated scope:** Small (2 files).
+
+**Commit intent:** `docs: inventory repository agent toolkit`.
+
+## Task T2: Add the selected local skill packages
+
+**Description:** Copy the complete, reviewed packages in T1's named batches.
+Add `planning-and-task-breakdown`, `conventional-branch`, `frontend-ui-engineering`,
+`create-readme`, `modern-web-guidance`, and `react-best-practices` under
+`.agents/skills/`. Retain existing `commit-message-storyteller`, `ponytail-review`,
+`pr`, and `create-pr` rather than installing duplicates.
+
+**Acceptance criteria:**
+
+- [ ] Each package includes SKILL.md and the support files it actually requires, with license/attribution preserved.
+- [ ] Personal absolute paths are adapted; required references resolve locally or name an explicit external prerequisite.
+- [ ] No unrelated skills, plugin caches, credentials, machine config, or optional agent registrations are copied.
+
+**Verification:** Compare each package with its recorded source; inspect all
+adaptations; validate metadata, links, and referenced scripts. Do not execute
+copied helpers until their content and side effects have been reviewed.
+
+**Dependencies:** T1.
+
+**Files likely touched:** T1's named batches under `.agents/skills/` and source records.
+
+**Estimated scope:** Repeat focused batches; one coherent commit per package/batch.
+
+**Commit intent:** `chore: vendor selected project skills` (scope per batch).
+
+## Task T3: Add repository-local instruction files
+
+**Description:** Copy the plan's applicable instruction files into
+`.agents/instructions/` in T1's named batches, preserving attribution and adapting
+references to repository paths.
+
+Required topics: `context-engineering`, `context7`, `self-explanatory-code-commenting`,
+`update-docs-on-code-change`, `code-review-generic`, `markdown`,
+`github-actions-ci-cd-best-practices`, `codexer`, `html-css-style-color-guide`,
+`playwright-typescript`, `containerization-docker-best-practices`, `instructions`,
+and `prompt` (each named `<topic>.instructions.md`).
+
+**Acceptance criteria:**
+
+- [ ] All selected instruction files and required references are present and portable.
+- [ ] Existing project conventions and user authorization boundaries remain intact.
+- [ ] Source records explain adaptations; files do not require the author's home directory or duplicate the full global router.
+
+**Verification:** Check paths and attribution, review conflicting instructions,
+and compare every copied file against its recorded source.
+
+**Dependencies:** T2.
+
+**Files likely touched:** T1's named instruction batches and source records.
+
+**Estimated scope:** Repeat batches of about 3-5 files with focused commits.
+
+**Commit intent:** `docs: add project instruction guidance` (scope per batch).
+
+## Task T4: Route and verify the local toolkit
+
+**Description:** Wire conditional repository-relative instruction links into
+AGENTS.md and update plan/README references to the actual local packages.
+
+**Acceptance criteria:**
+
+- [ ] AGENTS.md tells agents when to read each instruction and how to use local skills, without requiring global copies.
+- [ ] README/toolkit records explain prerequisites and deliberate update procedure.
+- [ ] Representative backend, frontend, CI, and documentation tasks resolve their guidance; unrelated tasks do not load the whole toolkit.
+- [ ] Fresh-session local skill discovery is tested where available, with any untested runtime behavior reported explicitly.
+
+**Verification:** Run a focused local path/reference check; inspect representative
+task routing and missing-tool behavior; run baseline checks. A file existing is
+not proof of fresh-session discovery. Keep one open PR and leave merge to the user.
+
+**Dependencies:** T3.
+
+**Files likely touched:** `AGENTS.md`, `README.md`, `.agents/toolkit.md`, `tasks/plan.md`, `tasks/todo.md`.
+
+**Estimated scope:** Medium (5 files).
+
+**Commit intent:** `docs: route and verify repository agent toolkit`.
+
+## Checkpoint: after T1-T4
+
+- [ ] Selected skills and instructions are tracked locally with portable references and source/license records.
+- [ ] Required support resources resolve; runtime/tool prerequisites and unverified discovery are documented.
+- [ ] Baseline checks pass; submit the toolkit PR and wait for user merge before task 6a.
+
 ## Task 6a: Display accessible paginated results
 
 **Description:** Add the feature's stock table and next/previous controls with responsive styles.
@@ -235,7 +343,7 @@ No dependencies added. Table and pagination controls remain task 6a.
 
 - [ ] Frontend build; manually traverse multiple pages and test API error/empty states at desktop/mobile sizes.
 
-**Dependencies:** 6
+**Dependencies:** 6, T4
 
 **Files likely touched:** `frontend/src/features/screener/StockTable.tsx`, `frontend/src/features/screener/Screener.tsx`, `frontend/src/styles.css`.
 
