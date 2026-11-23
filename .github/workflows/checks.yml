@@ -29,8 +29,8 @@ jobs:
       - name: Check formatting
         run: uv run --locked ruff format --check .
 
-      - name: Test branch validator
-        run: uv run --locked python -m unittest discover -s tests -v
+      - name: Run tests
+        run: uv run --locked pytest tests
 
       - name: Run hooks
         run: uv run --locked pre-commit run --all-files

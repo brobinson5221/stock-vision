@@ -3,7 +3,8 @@
 A stock screener being built with a Python/FastAPI backend and React/TypeScript
 frontend. The first version will use explicitly labeled sample data.
 
-Currently this repository provides development tooling and convention checks.
+Currently this repository provides an installable Python package, development
+tooling, and convention checks.
 There is no runnable application, frontend, or Docker image yet. See the
 [implementation plan](tasks/plan.md) and [task checklist](tasks/todo.md).
 
@@ -34,16 +35,23 @@ Run checks from the repository root:
 ```sh
 uv run --locked ruff check .
 uv run --locked ruff format --check .
-uv run --locked python -m unittest discover -s tests -v
+uv run --locked pytest tests
 uv run --locked pre-commit run --all-files
 uv run --locked python scripts/check_branch.py codex/feat/sample-screener
 ```
 
-The tests currently cover the branch validator. Format with `uv run ruff format .`.
+Tests cover the branch validator and installed-package import. The existing
+branch tests also run with `uv run --locked python -m unittest discover -s tests -v`.
+Format with `uv run ruff format .`.
 Hooks can change files; review and stage those edits before retrying a commit.
 
 Use `uv add PACKAGE` for runtime dependencies and `uv add --dev PACKAGE` for
 development tools. Commit `pyproject.toml` and `uv.lock` together when they change.
+
+The package lives in `src/stock_vision/` and installs during locked sync. Verify
+it with `uv run --locked python -c "import stock_vision"`. Build a source archive
+and wheel with `uv build`; outputs go to the ignored `dist/` directory. FastAPI
+and Uvicorn are runtime dependencies; pytest and httpx are development tools.
 
 Make focused Conventional Commits with working code and its tests together.
 Use `uv run cz commit` for prompts, or `git commit -m "ci: validate conventions"`.
@@ -57,7 +65,7 @@ reviewable within the PR. Follow the boundaries in the task checklist.
 ## GitHub verification
 
 The [Checks workflow](.github/workflows/checks.yml) runs locked installation,
-Ruff, branch-validator tests, and existing pre-commit hooks on pushes and PRs.
+Ruff, pytest tests, and existing pre-commit hooks on pushes and PRs.
 On PRs it also validates the branch name and every commit in the PR base-to-head
 range with Commitizen. The [PR title workflow](.github/workflows/pr-title.yml)
 checks Conventional Commit titles.
