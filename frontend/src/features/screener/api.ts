@@ -31,8 +31,8 @@ function isStock(value: unknown): value is Stock {
   );
 }
 
-export async function fetchStocks(signal: AbortSignal): Promise<StockPage> {
-  const response = await fetch("/api/stocks", { signal });
+export async function fetchStocks(signal: AbortSignal, query: URLSearchParams): Promise<StockPage> {
+  const response = await fetch(`/api/stocks?${query}`, { signal });
   if (!response.ok) throw new Error(`Stock request failed (${response.status}).`);
   const page: Partial<StockPage> | null = await response.json();
   if (
@@ -42,7 +42,9 @@ export async function fetchStocks(signal: AbortSignal): Promise<StockPage> {
     page.limit < 1 || page.limit > 100 ||
     typeof page.offset !== "number" || !Number.isSafeInteger(page.offset) || page.offset < 0 ||
     page.items.length > page.limit || page.items.length > page.total ||
-    page.provenance !== "synthetic-sample" || page.currency !== "USD"
+    page.provenance !== "synthetic-sample" || page.currency !== "USD" ||
+    page.offset !== Number(query.get("offset") ?? 0) ||
+    page.limit !== Number(query.get("limit") ?? 50)
   ) throw new Error("Invalid stock response.");
   return page as StockPage;
 }
