@@ -1,8 +1,8 @@
 # Stock Vision task checklist
 
-Status: toolkit T1-T2 complete in draft PR #7; six selected skill packages are
-copied locally. Next: instruction batches T3, then routing/verification T4 in
-the same PR. Tasks 6a–9 follow toolkit merge.
+Status: toolkit T1-T3 complete in draft PR #7; six skill packages and 13
+instruction files are copied locally. Next: root routing and verification T4
+in the same PR. Tasks 6a–9 follow toolkit merge.
 
 Baseline checks (from repository root): `uv run --locked ruff check .`,
 `uv run --locked ruff format --check .`, `uv run --locked pre-commit run --all-files`.
@@ -316,12 +316,19 @@ and `prompt` (each named `<topic>.instructions.md`).
 
 **Acceptance criteria:**
 
-- [ ] All selected instruction files and required references are present and portable.
-- [ ] Existing project conventions and user authorization boundaries remain intact.
-- [ ] Source records explain adaptations; files do not require the author's home directory or duplicate the full global router.
+- [x] All selected instruction files and required references are present and portable.
+- [x] Existing project conventions and user authorization boundaries remain intact.
+- [x] Source records explain adaptations; files do not require the author's home directory or duplicate the full global router.
 
 **Verification:** Check paths and attribution, review conflicting instructions,
 and compare every copied file against its recorded source.
+
+Completed T3a–T3c as three focused commits: 13 instructions and a shared upstream
+MIT license. Source hashes matched the inventory before copying. Eleven files
+are byte-identical; context7 and codexer only replace global Context7 references
+with root AGENTS.md. Expected-content comparisons, attribution, personal-path,
+file-count, and license checks passed. Root routing remains T4; files are not
+claimed automatically loaded merely because they exist.
 
 **Dependencies:** T2.
 

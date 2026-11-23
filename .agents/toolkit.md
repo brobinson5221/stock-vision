@@ -1,10 +1,10 @@
 # Repository agent toolkit inventory
 
-Inventory date: 2026-11-23. Status: T1-T2 complete; all six selected skill
-packages are copied locally. The four existing skills are unchanged. Instruction
-copies (T3), root routing and fresh-session discovery verification (T4) remain.
-Instruction destinations below are still planned. Application tasks are unchanged;
-this inventory is not an independent security audit or proof of skill discovery.
+Inventory date: 2026-11-23. Status: T1-T3 complete; all six selected skill
+packages and all 13 selected instruction files are copied locally. The four
+existing skills are unchanged. Root routing and fresh-session discovery
+verification remain T4. Application tasks are unchanged; this inventory is not
+an independent security audit or proof of skill discovery.
 
 ## Existing packages: preserve
 
@@ -116,15 +116,15 @@ Each destination is `.agents/instructions/<topic>.instructions.md`:
 | instructions | `B92F5A9B1AB0FA075486FD2DC3F516C47E08557903BED7AF0236CBC281351646` |
 | prompt | `271ADB01E9760727062F96AE4E3E4C51A13E8F02A26E48176C487CED091E3B37` |
 
-The context7 file currently refers to global routing; adapt that reference to
+The context7 and codexer copies now reference the Context7 workflow in
 root AGENTS.md. Instruction authoring guidance's personal-environment examples
 are context, not installation targets. Do not copy the full global instruction
 router into the project. Conditional links from project AGENTS.md are T4.
 
 ## Named copying batches
 
-Each batch is a coherent commit. Record source/license completion in SOURCE.md
-and refresh this inventory if the selected source changes before copying.
+Each batch is a coherent commit. Record source/license completion in skill SOURCE.md
+or this instruction inventory, and refresh it if the selected source changes.
 
 | Batch | Contents | Planned file scope |
 | --- | --- | --- |
@@ -180,3 +180,23 @@ reference documents (including Markdown hard breaks). Those source bytes are
 retained deliberately; this is not a claim that the full whitespace check passed.
 Ruff and pre-commit remain enabled. No supporting reference documents were
 independently security-audited, and fresh-session discovery is still unverified.
+
+## T3 instruction verification
+
+All 13 instruction files are present with the shared [upstream MIT license](instructions/LICENSE).
+Sources matched their recorded T1 hashes before copying. Eleven copies remain
+byte-identical to their installed source snapshots. Only these two copies differ:
+
+- [context7](instructions/context7.instructions.md): `global AGENTS.md` becomes
+  `root AGENTS.md`, whose Context7 section already defines the workflow.
+- [codexer](instructions/codexer.instructions.md): `global Context7 workflow`
+  becomes `Context7 workflow in root AGENTS.md`.
+
+After these replacements, all 13 files were compared against the expected source
+text. Original attribution links and authorization boundaries remain; none
+contains the author's absolute home path. The copied license matches the verified
+upstream MIT text already bundled with conventional-branch. Generic examples of
+user/global instruction scopes remain explanatory, not required installation paths.
+No application, global configuration, or existing skill files changed in T3.
+Root AGENTS.md conditional links and routing/discovery checks are the next task,
+T4; copying instruction files alone does not make Codex load them automatically.
