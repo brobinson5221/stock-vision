@@ -1,9 +1,10 @@
 # Repository agent toolkit inventory
 
-Inventory date: 2026-11-23. Status: T1 complete; selected additions are not yet
-copied or activated. Application tasks remain unchanged. Destinations below are
-planned unless marked existing. This is a source/dependency inventory, not an
-independent security audit or proof of skill discovery.
+Inventory date: 2026-11-23. Status: T1-T2 complete; all six selected skill
+packages are copied locally. The four existing skills are unchanged. Instruction
+copies (T3), root routing and fresh-session discovery verification (T4) remain.
+Instruction destinations below are still planned. Application tasks are unchanged;
+this inventory is not an independent security audit or proof of skill discovery.
 
 ## Existing packages: preserve
 
@@ -26,7 +27,7 @@ installed snapshot, not a claim that upstream main still contains identical text
 | planning-and-task-breakdown | [addyosmani/agent-skills][as], plugin 0.6.17, commit `8c99fa36d90068c82d547f7c12a9d67a3e95f4ee` | Root MIT license, Addy Osmani | Entry plus root `references/definition-of-done.md`; adapt the cross-package path into the local package. No executable helper. |
 | conventional-branch | [github/awesome-copilot][branch], local Codex adaptation pinned in SOURCE.md to `1683f50e94c9fd489191f73d7c8f7e2bd871bd0c` | Included MIT license, GitHub, Inc. | Four files: SKILL.md, SOURCE.md, LICENSE, agents/openai.yaml. Requires Git; no scripts. |
 | frontend-ui-engineering | [addyosmani/agent-skills][as], plugin 0.6.17, same commit as planning | Root MIT license, Addy Osmani | Entry plus root `references/accessibility-checklist.md`; adapt its cross-package path. Tool examples are conditional, not tool-install instructions. |
-| create-readme | User-installed Codex adaptation; [matching upstream skill][readme] inspected | Upstream [Awesome Copilot MIT license][ac-license] verified; local package has no license/source notice | One source file. Before copying, add upstream attribution, record adaptation differences, and include the applicable license. Exact adaptation history is unavailable; pin the observed content hash below. External example READMEs are links, not bundled dependencies. |
+| create-readme | User-installed Codex adaptation; [matching upstream skill][readme] inspected | Upstream [Awesome Copilot MIT license][ac-license] verified; local package has no license/source notice | Copied with upstream MIT LICENSE and explicit adaptation SOURCE.md. Exact adaptation history remains unavailable; the observed source hash below pins the installed adaptation. External example READMEs are links, not bundled dependencies. |
 | modern-web-guidance | [GoogleChrome/modern-web-guidance][mw], plugin 1.0.1, commit `64a6d708f5a43f2cd3fde5d4d7db3905ba1bdf65` | Plugin root Apache-2.0 LICENSE; package metadata agrees | 211 files: entry and 210 Markdown guides (about 2 MB). Keep the selected package intact, plus license/source records. Entry uses external Node/npm CLI search/retrieve; guides alone do not install that CLI. |
 | react-best-practices | [vercel/vercel-plugin][vc], installed plugin 0.54.1 | Manifest declares Apache-2.0; upstream [copyright/license notice][vc-license] verified | 75 files: entry, compiled AGENTS.md, UI metadata, 72 rule files. Include license and provenance. Wrapper README calls its runtime source 0.54.0; retain that discrepancy, use the content digest below, and verify upstream notice when copying. |
 
@@ -56,8 +57,9 @@ installed snapshot, not a claim that upstream main still contains identical text
   version when implementing the local copy. Never treat its permission advice
   as authorization or set a machine-specific cache path in committed guidance.
   Preserve its browser-compatibility and task-specific retrieval requirements.
-- Source README attribution and the Vercel packaging-version discrepancy require
-  explicit SOURCE.md notes in T2; do not invent an adaptation author/revision.
+- README attribution and the Vercel packaging-version discrepancy are recorded
+  in their local SOURCE.md files. No adaptation author or unknown runtime commit
+  has been invented.
 - Existing project conventions, user instructions, and authorization boundaries
   take priority over example code or generic skill preferences. No model changes,
   hooks, plugin registration, MCP configuration, credentials, or global files are
@@ -157,3 +159,24 @@ For updates, compare a named source revision/snapshot with the recorded digest,
 review license and dependency changes, preserve project adaptations, validate
 references/metadata, and submit focused commits through the same PR workflow.
 Do not automatically synchronize the toolkit or overwrite existing local skills.
+
+## T2 installation verification
+
+All six entrypoints pass the skill-creator structural validator. Every regular
+source file was byte-compared immediately after copying, and supporting files
+remain unchanged after the documented entrypoint adaptations. Installed package
+file counts match T2a-T2f: 4, 4, 4, 3, 213, and 77 (305 files total).
+The four pre-existing packages have no diff against the merged baseline.
+
+Planning/frontend references now resolve inside their packages. React's
+unsupported host-specific validate/retrieval frontmatter was removed; its UI
+metadata, rule documents, and compiled guide are retained. Modern-web guidance
+uses the bundled guides first and pins optional external CLI commands to 1.0.1;
+no web-guidance CLI or plugin was installed/executed; no MCP connection was configured.
+
+The new/modified entrypoint and source-note whitespace checks pass. A full
+branch `git diff --check` reports inherited whitespace in unchanged upstream
+reference documents (including Markdown hard breaks). Those source bytes are
+retained deliberately; this is not a claim that the full whitespace check passed.
+Ruff and pre-commit remain enabled. No supporting reference documents were
+independently security-audited, and fresh-session discovery is still unverified.

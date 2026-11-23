@@ -1,8 +1,8 @@
 # Stock Vision task checklist
 
-Status: plan amendment PR #6 merged; toolkit inventory T1 complete. Next: copy
-the named T2/T3 batches, then route/verify in T4 within the toolkit PR.
-Skills/instructions have not yet been copied. Tasks 6a–9 follow toolkit merge.
+Status: toolkit T1-T2 complete in draft PR #7; six selected skill packages are
+copied locally. Next: instruction batches T3, then routing/verification T4 in
+the same PR. Tasks 6a–9 follow toolkit merge.
 
 Baseline checks (from repository root): `uv run --locked ruff check .`,
 `uv run --locked ruff format --check .`, `uv run --locked pre-commit run --all-files`.
@@ -263,13 +263,21 @@ Add `planning-and-task-breakdown`, `conventional-branch`, `frontend-ui-engineeri
 
 **Acceptance criteria:**
 
-- [ ] Each package includes SKILL.md and the support files it actually requires, with license/attribution preserved.
-- [ ] Personal absolute paths are adapted; required references resolve locally or name an explicit external prerequisite.
-- [ ] No unrelated skills, plugin caches, credentials, machine config, or optional agent registrations are copied.
+- [x] Each package includes SKILL.md and the support files it actually requires, with license/attribution preserved.
+- [x] Personal absolute paths are adapted; required references resolve locally or name an explicit external prerequisite.
+- [x] No unrelated skills, plugin caches, credentials, machine config, or optional agent registrations are copied.
 
 **Verification:** Compare each package with its recorded source; inspect all
 adaptations; validate metadata, links, and referenced scripts. Do not execute
 copied helpers until their content and side effects have been reviewed.
+
+Completed T2a–T2f in six focused commits. All six entrypoints pass the structural
+skill validator; 305 copied package files include required references, licenses,
+and source notices. Supporting files were byte-compared against their source
+snapshots. The existing four skills are unchanged. Web-guidance CLI commands were not run;
+web guidance is local-first with its optional CLI version pinned. Root routing
+and fresh-session discovery remain T4. Full Git whitespace checking flags
+inherited upstream document formatting; authored entrypoints/source notes pass.
 
 **Dependencies:** T1.
 
