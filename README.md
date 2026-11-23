@@ -7,8 +7,8 @@ Currently this repository provides an installable Python package, development
 tooling, and convention checks.
 The packaged sample source contains six fictional companies with synthetic USD
 values, explicitly labeled `synthetic-sample`; these are not market quotes.
-The sample API and connected frontend run locally; the paginated table and Docker
-packaging are still pending. See the
+The sample API and paginated stock table run locally; frontend/browser CI and
+Docker packaging are still pending. See the
 [implementation plan](tasks/plan.md) and [task checklist](tasks/todo.md).
 
 ## Set up locally
@@ -86,10 +86,13 @@ npm --prefix frontend run dev
 
 Keep the sample API running on `127.0.0.1:8000` in another terminal, then open the
 local URL printed by Vite. Its development proxy forwards `/api` requests to the
-backend. The screener displays the first page as a simple stock list with
-loading, empty, and retryable error states. Reload cancels the previous request;
-late responses cannot replace current results. Table/pagination controls follow
-in task 6a.
+backend. The screener displays a table with synthetic-data provenance, USD prices
+and market capitalization, and explicit unavailable metrics. Previous/Next
+controls browse 50-row pages, preserve the API query, announce result ranges,
+and disable invalid navigation. On narrow screens, focus the table region and
+use arrow keys to scroll horizontally; row and column headers stay visible.
+Loading, empty, and retryable error states remain available. Reload cancels the
+previous request; late responses cannot replace current results.
 
 ```sh
 npm --prefix frontend run build

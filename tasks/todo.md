@@ -1,8 +1,8 @@
 # Stock Vision task checklist
 
-Status: toolkit T1-T4 complete in PR #7, awaiting user review and merge. Six
-skill packages and 13 instructions are local and routed from AGENTS.md.
-Fresh-session discovery is explicitly unverified. Task 6a follows toolkit merge.
+Status: toolkit PR #7 merged; task 6a complete on the sample-table branch.
+Next: tasks 7–9 in the same sample-browsing PR. Fresh-session toolkit discovery
+remains explicitly unverified.
 
 Baseline checks (from repository root): `uv run --locked ruff check .`,
 `uv run --locked ruff format --check .`, `uv run --locked pre-commit run --all-files`.
@@ -389,13 +389,21 @@ records this limit rather than inferring discovery from file presence.
 
 **Acceptance criteria:**
 
-- [ ] Table shows sample provenance, USD units, and unavailable values explicitly.
-- [ ] Pagination preserves queries, reports result counts, and disables invalid navigation.
-- [ ] Keyboard operation and narrow layouts work.
+- [x] Table shows sample provenance, USD units, and unavailable values explicitly.
+- [x] Pagination preserves queries, reports result counts, and disables invalid navigation.
+- [x] Keyboard operation and narrow layouts work.
 
 **Verification:**
 
-- [ ] Frontend build; manually traverse multiple pages and test API error/empty states at desktop/mobile sizes.
+- [x] Frontend build; manually traverse multiple pages and test API error/empty states at desktop/mobile sizes.
+
+Browser assertions checked six live API rows, USD/null display, and three-page
+navigation over a 105-row response fixture. Query parameters were preserved;
+keyboard Enter and horizontal scrolling worked. Layouts at 320/768/1024/1440px
+had no page overflow. Text contrast measured at least 6.48:1; border/focus at
+least 4.75:1. Empty/out-of-range pages, simulated 503 errors, and recovery passed
+on desktop/mobile. Native semantics and focus were checked; no screen-reader
+session was run. Verification browser and servers were closed.
 
 **Dependencies:** 6, T4
 
@@ -407,9 +415,9 @@ records this limit rather than inferring discovery from file presence.
 
 ## Checkpoint: after tasks 5-6a
 
-- [ ] All currently applicable tests, lint and builds pass; no checks bypassed.
-- [ ] Review diff and verify the capability introduced above manually.
-- [ ] Continue within the same sample-browsing PR after this internal checkpoint.
+- [x] All currently applicable tests, lint and builds pass; no checks bypassed.
+- [x] Review diff and verify the capability introduced above manually.
+- [x] Continue within the same sample-browsing PR after this internal checkpoint.
 
 ## Task 7: Verify source builds in CI
 
