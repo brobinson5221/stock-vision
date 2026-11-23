@@ -9,10 +9,12 @@ proposal for review; no application implementation is included in the planning P
 
 ## Current state
 
-The repository contains a Python template, not an application. Python is pinned
-to 3.15. uv, Ruff, pre-commit, and Commitizen are configured, with a tracked
-uv.lock. Actions currently checks Ruff and Conventional Commit PR titles.
-There are no source files, application tests, frontend, or Docker configuration.
+Tasks 1-6, including 4a/4b, are implemented: the Python 3.15 src package exposes
+a sample browsing API, and the React/TypeScript frontend requests its first page.
+Forty Python tests pass; locked frontend install/build and request-state browser
+checks have passed locally. CI checks Python tests, Ruff, hooks, branch/commit
+conventions, and PR titles. Table controls, frontend/browser CI, the local toolkit
+below, and Docker packaging remain pending.
 
 ## Architecture decisions
 
@@ -77,6 +79,10 @@ frontend/
 scripts/                       # development and CI utilities, not application code
 tasks/                         # plan and implementation checklist
 .github/workflows/
+.agents/
+  skills/                      # complete selected skill packages, including support files
+  instructions/                # task-specific instructions routed from AGENTS.md
+  toolkit.md                   # sources, revisions, licenses, and update procedure
 Dockerfile
 .dockerignore
 ```
@@ -149,9 +155,11 @@ that those tools or scripts already exist.
 | --- | --- | --- | --- |
 | 0 | Plan and review | This plan | Architecture plan; executable task checklist |
 | 1 | Development conventions | 1-3 | Project identity; commit/branch CI; contributor guide |
-| 2 | Browse sample stocks | 4-9, including 4a/4b/6a | Package; source; API + tests; frontend setup; paginated table; CI; docs |
-| 3 | Screen stocks | 10-12, including 10a/11a/12a | Search/sector slice; numeric filter slice; sorting slice |
-| 4 | Run the verified container | 13-15 | Container + smoke check; Docker CI; runbook |
+| 2 | Sample browsing foundations (merged PRs #3-5) | 4-6, including 4a/4b | Package; source; API; connected frontend |
+| 3 | Repository toolkit (after this amendment merges) | T1-T4 | Inventory; skill packages; instruction batches; routing verification |
+| 4 | Complete sample browsing | 6a-9 | Paginated table; source/browser CI; sample runbook |
+| 5 | Screen stocks | 10-12, including 10a/11a/12a | Search/sector slice; numeric filter slice; sorting slice |
+| 6 | Run the verified container | 13-15 | Container + smoke check; Docker CI; runbook |
 
 Checkpoints after every two or three tasks verify progress within a PR; the PR
 boundary is the human review/merge gate. A task checkpoint is not another PR.
@@ -160,23 +168,38 @@ task identifiers. Finish each API-to-UI feature pair before beginning the next.
 
 ## Toolkit by phase
 
-Use the existing resources below when their task begins; do not install or copy
-the entire toolkit into the repository. Global instructions are already routed
-by the user's AGENTS.md. Read their owning files for the applicable task rather
-than duplicating their contents here. This map does not expand feature scope.
+Ship repository-local copies of the selected skills and instructions below so
+a checkout carries its working guidance. Tasks T1-T4 in [todo.md](todo.md) are
+the next work, before task 6a. PR #5 has merged; submit this amendment for review,
+then complete the toolkit in the next scoped PR before resuming sample browsing.
+Existing application tasks stay complete; this does not require redoing them.
 
-In this section, `~` means the user's home directory. Global skills live under
-`~/.codex/skills/`, instructions under `~/.codex/instructions/`, and agent
-definitions under `~/.codex/agents/`. Plugin skills are identified by their
-session catalog names; resolve the active version's path when loading them.
-These global resources are local prerequisites, not files shipped by this repo.
+Keep skills in `.agents/skills/<name>/` and instructions in
+`.agents/instructions/`. Preserve the four existing repository skills and their
+user edits; add only missing packages. Copy required references, scripts, assets,
+agent metadata, and license/attribution files along with each `SKILL.md`.
+Do not copy unrelated global skills or the entire plugin cache.
+
+Inventory the installed source versions first and review content before use.
+Record upstream source URLs, revisions/versions, licenses, local destinations,
+support-file dependencies, and deliberate adaptations in `.agents/toolkit.md`.
+Respect redistribution terms; flag unavailable or non-redistributable resources
+instead of silently substituting or claiming them installed. Rewrite personal
+absolute paths and required cross-package links into portable repository-relative
+references. Keep instructions in one owning file and route them conditionally
+from root `AGENTS.md`; separate instruction files are not automatically loaded.
+
+The local toolkit is a reviewed snapshot. Update it deliberately, with source
+diffs and validation; do not add automatic synchronization. Skills requiring MCP
+connections, plugins, CLIs, or credentials must document those prerequisites.
+Vendoring their guidance does not provision tools or grant permissions.
 
 ### Shared workflow
 
 | When | Resource | Purpose |
 | --- | --- | --- |
-| Revising the plan | `agent-skills:planning-and-task-breakdown` | Keep tasks, dependencies, acceptance criteria, and PR gates aligned. |
-| Starting a branch | `~/.codex/skills/conventional-branch/SKILL.md` | Apply this project's `codex/<type>/<description>` policy and validate the Git ref. |
+| Revising the plan | Planned `.agents/skills/planning-and-task-breakdown/SKILL.md` | Keep tasks, dependencies, acceptance criteria, and PR gates aligned. |
+| Starting a branch | Planned `.agents/skills/conventional-branch/SKILL.md` | Apply this project's `codex/<type>/<description>` policy and validate the Git ref. |
 | Each commit | [commit-message-storyteller](../.agents/skills/commit-message-storyteller/SKILL.md) | Base a coherent Conventional Commit on the staged diff. |
 | Reviewing code/configuration | [ponytail-review](../.agents/skills/ponytail-review/SKILL.md) | Check connected code for defects, missing tests, and unnecessary complexity. |
 | Each PR | [pr](../.agents/skills/pr/SKILL.md) and [create-pr](../.agents/skills/create-pr/SKILL.md) | Provide evidence, follow latest CI, and leave merging to the user. |
@@ -186,8 +209,8 @@ Apply `context-engineering.instructions.md` when gathering context and
 `self-explanatory-code-commenting.instructions.md` and
 `update-docs-on-code-change.instructions.md`; scoped reviews use
 `code-review-generic.instructions.md`. Markdown edits use
-`markdown.instructions.md`. All filenames in this paragraph refer to the global
-instructions directory above. Documentation-only reviews need link and command
+`markdown.instructions.md`. All filenames in this paragraph target the planned
+`.agents/instructions/` directory. Documentation-only reviews need link and command
 accuracy checks, not an application test suite.
 
 ### Implementation stages
@@ -196,12 +219,12 @@ accuracy checks, not an application test suite.
 | --- | --- | --- |
 | Conventions, tasks 1-3 | `github-actions-ci-cd-best-practices.instructions.md` | Branch/commit checks, hooks in CI, action pins, and existing required checks. |
 | Backend, task 4 and tasks 10-12 | `codexer.instructions.md` plus Context7 guidance | Python/FastAPI dependencies, response contracts, validation, and focused tests. |
-| Frontend, tasks 5-6 and tasks 10-12 | `agent-skills:frontend-ui-engineering`; `html-css-style-color-guide.instructions.md` | Accessible tables and controls, responsive layout, contrast, and loading/error/empty states. |
+| Frontend, tasks 5-6a and tasks 10-12 | Planned local skills `frontend-ui-engineering`, `modern-web-guidance`, `react-best-practices`; `html-css-style-color-guide.instructions.md` | Accessible tables and controls, responsive layout, contrast, request states, and React review. |
 | Source and browser CI, tasks 7-8 and tasks 10-12 | `github-actions-ci-cd-best-practices.instructions.md`; `playwright-typescript.instructions.md` | Real API/browser verification, resilient locators, and diagnostic artifacts. |
 | Container, tasks 13-14 | `containerization-docker-best-practices.instructions.md`; GitHub Actions guidance | Build the final image, verify startup and runtime permissions, and retain failure logs. |
-| Documentation, tasks 3, 9, 15 | `~/.codex/skills/create-readme/SKILL.md`; Markdown and documentation-impact guidance | Keep setup, run commands, and limitations consistent with implemented behavior. |
+| Documentation, tasks 3, 9, 15 | Planned `.agents/skills/create-readme/SKILL.md`; Markdown and documentation-impact guidance | Keep setup, run commands, and limitations consistent with implemented behavior. |
 
-Instruction filenames in the table resolve under `~/.codex/instructions/`.
+Instruction filenames in the table target `.agents/instructions/` after T3.
 If AGENTS.md itself is edited, also load `instructions.instructions.md` and
 `prompt.instructions.md`, as required by the user's instruction routing.
 Use only the relevant parts of broad skills: no speculative infrastructure,
@@ -222,9 +245,11 @@ the same sequential PR gates.
 | `playwright-tester.toml` | Explore the running screener and add browser tests. | Requires a runnable app and browser access; report missing prerequisites. |
 
 No extra coordinator, model changes, agent registration, or duplicate resource
-installation is required. If a resource is missing on another machine, report
-the gap and resolve it within that task's authorization rather than silently
-claiming it was loaded.
+installation outside this selected toolkit is required. Optional agent definitions
+remain outside the copying tasks; the user requested skills and instructions.
+Verify local skill discovery in a fresh Codex session where possible. Separately
+check that AGENTS.md routes matching tasks and leaves unrelated tasks unaffected;
+report any unavailable fresh-session check without claiming runtime discovery.
 
 ## CI and failure feedback
 
