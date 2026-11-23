@@ -1,7 +1,7 @@
 # Stock Vision task checklist
 
-Status: PR #3 merged by the user after task 4. Task 4a complete on the next branch;
-tasks 4b–9 remain for the sample-browsing PR.
+Status: PR #4 merged by the user after task 4a. Task 4b complete on the next branch;
+tasks 5–9 remain for the sample-browsing PR.
 
 Baseline checks (from repository root): `uv run --locked ruff check .`,
 `uv run --locked ruff format --check .`, `uv run --locked pre-commit run --all-files`.
@@ -150,13 +150,18 @@ verification environment removed; no HTTP handlers introduced.
 
 **Acceptance criteria:**
 
-- [ ] Health and stock endpoints return validated responses with items, total, limit, offset, and provenance.
-- [ ] Multiple pages, invalid bounds, empty/out-of-range pages, and stable ordering are tested.
-- [ ] Source dependency can be replaced in tests; request handling does not mutate shared data.
+- [x] Health and stock endpoints return validated responses with items, total, limit, offset, and provenance.
+- [x] Multiple pages, invalid bounds, empty/out-of-range pages, and stable ordering are tested.
+- [x] Source dependency can be replaced in tests; request handling does not mutate shared data.
 
 **Verification:**
 
-- [ ] uv run --locked pytest tests; baseline checks; HTTP tests use more than one page of data.
+- [x] uv run --locked pytest tests; baseline checks; HTTP tests use more than one page of data.
+
+All 40 tests pass. HTTP tests traverse 105 unsorted rows over three pages using
+a dependency override, check bounds/empty sources, and verify unchanged input.
+Baseline checks and wheel build pass. TestClient emits the upstream httpx
+deprecation warning; tests pass without suppressing it.
 
 **Dependencies:** 4a
 

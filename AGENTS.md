@@ -8,9 +8,13 @@ Keep this guidance updated as the project grows.
 
 Stock Vision has an installable `src/stock_vision/` package and pytest tests,
 including standard-library unittest cases for its branch validator. There is no
-runnable API or container yet. Follow `tasks/plan.md` and `tasks/todo.md`.
+frontend or container yet. Follow `tasks/plan.md` and `tasks/todo.md`.
 Keep tests separate in `tests/`; the planned frontend lives in `frontend/src/`.
 Create modules only when their task introduces behavior.
+
+Run the sample API with `uv run --locked uvicorn stock_vision.main:app --reload`.
+Health is `/api/health`; browsing is `/api/stocks`. Routes delegate ordering and
+pagination to `stocks/service.py`, using the injectable sample source.
 
 ## Setup and dependencies
 
