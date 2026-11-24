@@ -4,7 +4,7 @@ import RangeFilters from "./RangeFilters";
 import StockTable from "./StockTable";
 
 type State =
-  | { status: "loading" }
+  | { status: "loading"; page?: StockPage }
   | { status: "error" }
   | { status: "invalid-range" }
   | { status: "ready"; page: StockPage };
@@ -14,12 +14,15 @@ const sectors = ["Energy", "Healthcare", "Industrials", "Technology"];
 
 export default function Screener() {
   const [attempt, setAttempt] = useState(0);
-  const [query, setQuery] = useState<StockQuery>({ limit: 50, offset: 0, q: "", sector: "", ranges: {} });
+  const [query, setQuery] = useState<StockQuery>({
+    limit: 50, offset: 0, q: "", sector: "", ranges: {}, sortBy: "symbol", sortDir: "asc",
+  });
   const [state, setState] = useState<State>({ status: "loading" });
   const { offset, limit, q, sector } = query;
+  const displayedPage = state.status === "ready" || state.status === "loading" ? state.page : undefined;
 
-  function changeQuery(next: StockQuery) {
-    setState({ status: "loading" });
+  function changeQuery(next: StockQuery, page?: StockPage) {
+    setState({ status: "loading", page });
     setQuery(next);
   }
 
@@ -59,7 +62,7 @@ export default function Screener() {
             {sectors.map((option) => <option key={option}>{option}</option>)}
           </select>
         </div>
-        <button type="button" onClick={() => changeQuery({ limit, offset: 0, q: "", sector: "", ranges: {} })}>
+        <button type="button" onClick={() => changeQuery({ ...query, offset: 0, q: "", sector: "", ranges: {} })}>
           Clear filters
         </button>
       </div>
@@ -81,10 +84,19 @@ export default function Screener() {
           <p role="status">
             Showing {state.page.items.length ? state.page.offset + 1 : 0}–{state.page.items.length ? state.page.offset + state.page.items.length : 0} of {state.page.total} {state.page.total === 1 ? "stock" : "stocks"}.
           </p>
-          {state.page.items.length === 0
-            ? <p>{state.page.total === 0 ? "No stocks found." : "No stocks on this page. Use Previous to return."}</p>
-            : <StockTable stocks={state.page.items} />}
+          {state.page.items.length === 0 && (
+            <p>{state.page.total === 0 ? "No stocks found." : "No stocks on this page. Use Previous to return."}</p>
+          )}
         </>}
+      {displayedPage && displayedPage.items.length > 0 && (
+        <StockTable stocks={displayedPage.items} sort={query} busy={state.status === "loading"}
+          onSort={(sortBy) => changeQuery({
+            ...query,
+            offset: 0,
+            sortBy,
+            sortDir: query.sortBy === sortBy && query.sortDir === "asc" ? "desc" : "asc",
+          }, displayedPage)} />
+      )}
       <nav aria-label="Stock result pages" className="pagination">
         <button type="button" disabled={state.status === "loading" || offset === 0}
           onClick={() => changeQuery({ ...query, offset: Math.max(0, offset - limit) })}>

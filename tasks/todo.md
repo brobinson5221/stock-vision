@@ -2,7 +2,8 @@
 
 Status: PRs #7–9 have merged, including toolkit, table, CI, and browser coverage.
 Task 9 merged in PR #10, and search and sector filtering merged in PR #11.
-The API and browser support financial ranges in PR #12. Sorting follows after merge.
+Financial range filtering merged in PR #12. PR #13 completes sorting in the
+API and table. The Docker phase follows after merge.
 Fresh-session toolkit discovery
 remains explicitly unverified.
 
@@ -599,12 +600,13 @@ The frontend CI job installs Chromium, runs the test, and uploads failure traces
 **Description:** Add validated sort keys and direction with deterministic results.
 
 **Acceptance criteria:**
-- [ ] Sorting preserves filters
-- [ ] null values sort last both ways
-- [ ] ties use symbol consistently across page boundaries.
+- [x] Sorting preserves filters.
+- [x] Null values sort last in both directions.
+- [x] Equal values use ascending symbol order across page boundaries.
 
 **Verification:**
-- [ ] API and unit sort/tie/null tests pass; browser sort/reset tests follow in Task 12a.
+- [x] API and unit tests cover sort options, nulls, ties, and filter preservation.
+  Browser sort and reset tests follow in Task 12a.
 
 **Dependencies:** 11a
 
@@ -620,12 +622,13 @@ The frontend CI job installs Chromium, runs the test, and uploads failure traces
 
 **Acceptance criteria:**
 
-- [ ] Sort controls preserve filters, reset offset, and support keyboard interaction.
-- [ ] Browser tests verify ordering and stable page boundaries, including nulls/ties.
+- [x] Sort controls preserve filters, reset offset, and support keyboard interaction.
+- [x] Browser tests verify ordering and stable page boundaries, including nulls and ties.
 
 **Verification:**
 
-- [ ] Full API, frontend, browser checks and latest PR CI pass.
+- [x] The local API tests, frontend lint and build, and five Chromium tests pass.
+- Verify GitHub Actions on the latest PR revision before marking it ready.
 
 **Dependencies:** 12
 
@@ -637,9 +640,9 @@ The frontend CI job installs Chromium, runs the test, and uploads failure traces
 
 ## Checkpoint: after tasks 12-12a
 
-- [ ] All currently applicable tests, lint and builds pass; no checks bypassed.
-- [ ] Review diff and verify the capability introduced above manually.
-- [ ] Open/update the single scoped PR, verify latest CI, and wait for user review and merge before the next PR.
+- [x] Applicable local tests, lint, and builds pass.
+- [x] Review the diff and verify keyboard sorting against the real API in Chromium.
+- [ ] User review and merge after the sorting PR's checks pass.
 
 ## Task 13: Package the application
 

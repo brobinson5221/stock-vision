@@ -35,3 +35,12 @@ def test_filtering_precedes_pagination():
     page = browse_stocks(source, PageQuery(q=" demo ", sector=" teCHNOLOGY ", limit=1, offset=1))
     assert [stock.symbol for stock in page.items] == ["DEMOD"]
     assert page.total == 2  # noqa: PLR2004 -- Two Technology rows match.
+
+
+def test_descending_sort_keeps_symbol_ties_across_pages():
+    source = StockDataset(items=tuple(reversed(load_sample_stocks().items)))
+    first = browse_stocks(source, PageQuery(sort_by="pe_ratio", sort_dir="desc", limit=1))
+    second_query = PageQuery(sort_by="pe_ratio", sort_dir="desc", limit=1, offset=1)
+    second = browse_stocks(source, second_query)
+    assert [stock.symbol for stock in first.items + second.items] == ["DEMOA", "DEMOD"]
+    assert first.total == second.total == len(source.items)

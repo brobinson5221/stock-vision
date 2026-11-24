@@ -33,6 +33,8 @@ class PageQuery(BaseModel):
     max_market_cap: FiniteFloat | None = Field(default=None, ge=0)
     min_pe_ratio: FiniteFloat | None = None
     max_pe_ratio: FiniteFloat | None = None
+    sort_by: Literal["symbol", "name", "sector", "price", "market_cap", "pe_ratio"] = "symbol"
+    sort_dir: Literal["asc", "desc"] = "asc"
 
     @model_validator(mode="after")
     def validate_ranges(self) -> Self:
