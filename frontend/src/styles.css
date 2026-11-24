@@ -68,6 +68,22 @@ th, td {
   white-space: nowrap;
 }
 thead { position: sticky; inset-block-start: 0; z-index: 2; background: var(--secondary); }
+thead th { padding: 0; }
+.table-sort {
+  inline-size: 100%;
+  min-block-size: 2.75rem;
+  padding: 0.75rem;
+  font-weight: inherit;
+  text-align: inherit;
+  background: transparent;
+  border: 0;
+}
+.table-sort:hover:not(:disabled) { background: var(--surface); }
+.table-sort:focus-visible { outline-offset: -3px; }
+.sort-indicator { margin-inline-start: 0.5em; }
+.sort-indicator::before { content: "↕"; }
+th[aria-sort="ascending"] .sort-indicator::before { content: "↑"; }
+th[aria-sort="descending"] .sort-indicator::before { content: "↓"; }
 tbody th { position: sticky; inset-inline-start: 0; background: var(--surface); z-index: 1; }
 .numeric { text-align: end; font-variant-numeric: tabular-nums; }
 [role="alert"] { border-inline-start: 0.25rem solid var(--border); padding-inline-start: 0.75rem; }

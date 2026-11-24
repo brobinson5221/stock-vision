@@ -136,3 +136,49 @@ test("combines financial ranges with search and sector and shows invalid bounds"
   await expect(status).toHaveText("Showing 1–50 of 51 stocks.");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
+
+test("sorts by keyboard, keeps missing values last, and preserves ties between pages", async ({ page }) => {
+  await page.goto("/");
+  const status = page.getByRole("status");
+  const symbols = page.getByRole("rowheader");
+  const next = page.getByRole("button", { name: "Next" });
+  const search = page.getByRole("searchbox", { name: "Symbol or company" });
+  const minimumPrice = page.getByRole("group", { name: "Price (USD)" }).getByLabel("Minimum");
+  const marketCap = page.getByRole("columnheader", { name: "Market cap (USD)" });
+  const marketCapSort = marketCap.getByRole("button");
+
+  await search.fill("demo");
+  await minimumPrice.fill("20");
+  await next.click();
+  await expect(status).toHaveText("Showing 51–51 of 51 stocks.");
+  await marketCapSort.press("Enter");
+  await expect(marketCap).toHaveAttribute("aria-sort", "ascending");
+  await expect(status).toHaveText("Showing 1–50 of 51 stocks.");
+  await expect(marketCapSort).toBeFocused();
+  await expect(symbols.first()).toHaveText("DEMOE");
+  await expect(search).toHaveValue("demo");
+  await expect(minimumPrice).toHaveValue("20");
+  await next.click();
+  await expect(symbols).toHaveText("DEMOC");
+
+  await marketCapSort.press("Space");
+  await expect(marketCap).toHaveAttribute("aria-sort", "descending");
+  await expect(symbols.first()).toHaveText("DEMOA");
+  await next.click();
+  await expect(symbols).toHaveText("DEMOC");
+
+  const sector = page.getByRole("columnheader", { name: "Sector" });
+  await sector.getByRole("button").click();
+  await expect(sector).toHaveAttribute("aria-sort", "ascending");
+  await expect(page.locator("th[aria-sort]")).toHaveCount(1);
+  await expect(status).toHaveText("Showing 1–50 of 51 stocks.");
+  await expect(symbols.last()).toHaveText("TEST44");
+  await next.click();
+  await expect(symbols).toHaveText("TEST45");
+
+  await page.getByRole("combobox", { name: "Sector" }).selectOption("Healthcare");
+  await expect(symbols).toHaveText(["DEMOB", "DEMOF"]);
+  await expect(sector).toHaveAttribute("aria-sort", "ascending");
+  await page.getByRole("columnheader", { name: "Price (USD)" }).getByRole("button").click();
+  await expect(symbols).toHaveText(["DEMOF", "DEMOB"]);
+});

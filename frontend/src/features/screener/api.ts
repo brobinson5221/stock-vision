@@ -19,7 +19,12 @@ export interface StockPage {
 export type RangeMetric = "price" | "market_cap" | "pe_ratio";
 export type RangeBound = `${"min" | "max"}_${RangeMetric}`;
 
-export interface StockQuery {
+export interface StockSort {
+  sortBy: keyof Stock;
+  sortDir: "asc" | "desc";
+}
+
+export interface StockQuery extends StockSort {
   limit: number;
   offset: number;
   q: string;
@@ -45,7 +50,10 @@ function isStock(value: unknown): value is Stock {
 }
 
 export async function fetchStocks(signal: AbortSignal, query: StockQuery): Promise<StockPage> {
-  const params = new URLSearchParams({ limit: String(query.limit), offset: String(query.offset) });
+  const params = new URLSearchParams({
+    limit: String(query.limit), offset: String(query.offset),
+    sort_by: query.sortBy, sort_dir: query.sortDir,
+  });
   const search = query.q.trim();
   if (search) params.set("q", search);
   if (query.sector) params.set("sector", query.sector);
