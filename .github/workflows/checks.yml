@@ -94,3 +94,21 @@ jobs:
 
       - name: Check types and build
         run: npm run build
+
+      - uses: astral-sh/setup-uv@18d369b23da25a81e9458561248e1aafff6a70fa # v10.3.1
+        with:
+          python-version: "3.15"
+
+      - name: Install Chromium
+        run: npm exec -- playwright install --with-deps chromium
+
+      - name: Test the browser-to-API flow
+        run: npm run test:e2e
+
+      - name: Upload browser failure traces
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: browser-failure-traces
+          path: dist/e2e-results/**/trace.zip
+          if-no-files-found: ignore

@@ -7,8 +7,8 @@ Currently this repository provides an installable Python package, development
 tooling, and convention checks.
 The packaged sample source contains six fictional companies with synthetic USD
 values, explicitly labeled `synthetic-sample`; these are not market quotes.
-The sample API and paginated stock table run locally. Browser tests and Docker
-packaging are still pending. See the
+The sample API and paginated stock table run locally and are tested in Chromium.
+Docker packaging is still pending. See the
 [implementation plan](tasks/plan.md) and [task checklist](tasks/todo.md).
 
 ## Set up locally
@@ -102,6 +102,18 @@ npm --prefix frontend run preview
 
 The build runs strict TypeScript checking and writes static assets to
 `frontend/dist/`. Preview serves those assets locally for verification.
+
+Run the browser test after installing dependencies and building the frontend:
+
+```sh
+npm --prefix frontend exec -- playwright install chromium
+npm --prefix frontend run test:e2e
+```
+
+Leave ports 8000 and 4173 free. Playwright starts and stops the sample API and
+Vite preview. The test extends the sample to 51 rows to exercise real pagination
+and injects a single HTTP 503 to verify recovery. Failed runs retain `trace.zip`
+under `dist/e2e-results/`. CI uploads available traces as `browser-failure-traces`.
 
 Make focused Conventional Commits with working code and its tests together.
 Use `uv run cz commit` for prompts, or `git commit -m "ci: validate conventions"`.

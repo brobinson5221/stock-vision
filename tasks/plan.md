@@ -9,13 +9,14 @@ proposal for review; no application implementation is included in the planning P
 
 ## Current state
 
-Tasks 1–7, including 4a/4b and 6a, are implemented: the Python 3.15 src package exposes
+Tasks 1–8, including 4a/4b and 6a, are implemented: the Python 3.15 src package exposes
 a sample browsing API, and the React/TypeScript frontend displays a paginated table.
 Forty Python tests pass; locked frontend install/build and request-state browser
 checks have passed locally. CI checks Python tests, Ruff, hooks, branch/commit
 conventions, PR titles, clean wheel installation, and the locked frontend build.
-Browser tests and Docker packaging remain
-pending. The local toolkit is copied and routed in merged PR #7;
+The browser test covers the built frontend and real API pagination, with traces
+retained on failure. Docker packaging remains pending. The local toolkit is
+copied and routed in merged PR #7;
 fresh-session automatic discovery remains unverified.
 
 ## Architecture decisions
@@ -176,7 +177,8 @@ implemented in toolkit PR #7, following merged plan amendment #6. Root
 [AGENTS.md](../AGENTS.md) routes matching tasks to local files. Toolkit file,
 metadata, and routing checks are recorded in [the inventory](../.agents/toolkit.md);
 fresh-session automatic discovery remains unverified. PR #7 has merged; task 6a
-and build verification are complete. The next sample-browsing task is 8.
+and build verification have merged in PR #8. Browser coverage is implemented;
+the next sample-browsing task is 9.
 
 Keep skills in `.agents/skills/<name>/` and instructions in
 `.agents/instructions/`. Preserve the four existing repository skills and their
