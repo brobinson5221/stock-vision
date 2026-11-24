@@ -13,18 +13,20 @@ Docker packaging is still pending. See the
 
 ## Set up locally
 
-Install Git and [uv](https://docs.astral.sh/uv/getting-started/installation/), then:
+Install Git, [uv](https://docs.astral.sh/uv/getting-started/installation/), and
+Node.js 24 with npm. From a terminal:
 
 ```sh
 git clone https://github.com/brobinson5221/stock-vision.git
 cd stock-vision
 uv sync --locked
-uv run --locked pre-commit install
+npm --prefix frontend ci
 ```
 
 uv follows the Python 3.15 pin in [.python-version](.python-version) and installs
-development tools into `.venv`. Hook installation enables both pre-commit and
-commit-message checks; repeat it in each checkout.
+development tools into `.venv`. If you plan to commit changes, run
+`uv run --locked pre-commit install` in each checkout to enable the pre-commit
+and commit-message hooks.
 
 ## Development loop
 
@@ -38,6 +40,7 @@ Run checks from the repository root:
 ```sh
 uv run --locked ruff check .
 uv run --locked ruff format --check .
+uv run --locked python -m unittest discover -s tests -v
 uv run --locked pytest tests
 uv run --locked pre-commit run --all-files
 uv run --locked python scripts/check_branch.py codex/feat/sample-screener
@@ -64,11 +67,13 @@ remain `None`. Pagination inputs default to limit 50 and offset 0, with limit
 
 ## Run the sample API
 
+From the repository root, start the API in terminal 1 and leave it running:
+
 ```sh
 uv run --locked uvicorn stock_vision.main:app --reload
 ```
 
-Open `http://127.0.0.1:8000/docs` for the API explorer.
+Open [the API explorer](http://127.0.0.1:8000/docs) to try requests.
 `GET /api/health` returns `{"status":"ok"}`. `GET /api/stocks?limit=2&offset=0`
 returns `items`, `total`, `limit`, `offset`, `provenance`, and `currency`.
 Results are ordered by symbol before pagination; out-of-range pages are empty
@@ -76,34 +81,39 @@ with the total preserved. Invalid page bounds return HTTP 422.
 
 ## Run the frontend
 
-Use Node.js 24 and npm (verified with Node 24.14.1 and npm 11.19.1).
-From the repository root:
+From the repository root in terminal 2, start Vite:
 
 ```sh
-npm --prefix frontend ci
-npm --prefix frontend run dev
+npm --prefix frontend run dev -- --host 127.0.0.1 --port 5173 --strictPort
 ```
 
-Keep the sample API running on `127.0.0.1:8000` in another terminal, then open the
-local URL printed by Vite. Its development proxy forwards `/api` requests to the
-backend. The screener displays a table with synthetic-data provenance, USD prices
-and market capitalization, and explicit unavailable metrics. Previous/Next
+Open [the screener](http://127.0.0.1:5173/). Vite forwards `/api` requests to
+`127.0.0.1:8000`. The table labels the data as synthetic, displays prices and
+market capitalization in USD, and marks unavailable metrics. Previous/Next
 controls browse 50-row pages, preserve the API query, announce result ranges,
 and disable invalid navigation. On narrow screens, focus the table region and
 use arrow keys to scroll horizontally; row and column headers stay visible.
 Loading, empty, and retryable error states remain available. Reload cancels the
 previous request; late responses cannot replace current results.
 
+The six packaged rows fit on one page, so Previous and Next are both disabled.
+The sample supports browsing only. Live market data, search, and filters are
+outside the current sample. Press Ctrl+C in each terminal to stop the services.
+
+## Verify the frontend
+
+From the repository root, run:
+
 ```sh
 npm --prefix frontend run lint
 npm --prefix frontend run build
-npm --prefix frontend run preview
 ```
 
 The build runs strict TypeScript checking and writes static assets to
-`frontend/dist/`. Preview serves those assets locally for verification.
+`frontend/dist/`.
 
-Run the browser test after installing dependencies and building the frontend:
+Stop the development servers before running the browser test. On Linux, add
+`--with-deps` to the install command if Chromium's system libraries are missing.
 
 ```sh
 npm --prefix frontend exec -- playwright install chromium
@@ -130,8 +140,8 @@ The [Checks workflow](.github/workflows/checks.yml) runs locked installation,
 Ruff, pytest, and existing pre-commit hooks on pushes and PRs. It also builds and
 installs a wheel outside the checkout to verify the API import and packaged sample
 data. The frontend job uses Node.js 24 and `npm ci` before linting, checking types,
-and building. Download the `pytest-results` artifact from the workflow run for
-the JUnit report, including when tests fail.
+building, and running the Chromium browser test. Download the `pytest-results`
+artifact from the workflow run for the JUnit report, including when tests fail.
 On PRs it also validates the branch name and every commit in the PR base-to-head
 range with Commitizen. The [PR title workflow](.github/workflows/pr-title.yml)
 checks Conventional Commit titles.
