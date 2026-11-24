@@ -103,8 +103,9 @@ Loading, empty, and retryable error states remain available. Reload cancels the
 previous request; late responses cannot replace current results.
 
 The six packaged rows fit on one page, so Previous and Next are both disabled.
-The browser currently supports browsing. Search and sector filters are available
-through the sample API. Press Ctrl+C in each terminal to stop the services.
+Type part of a symbol or company name, choose a sector, or combine both.
+Changing either filter returns to the first page. **Clear filters** restores
+the unfiltered list. Press Ctrl+C in each terminal to stop the services.
 
 ## Verify the frontend
 
@@ -127,8 +128,9 @@ npm --prefix frontend run test:e2e
 ```
 
 Leave ports 8000 and 4173 free. Playwright starts and stops the sample API and
-Vite preview. The test extends the sample to 51 rows to exercise real pagination
-and injects a single HTTP 503 to verify recovery. Failed runs retain `trace.zip`
+Vite preview. The suite extends the sample to 51 rows to exercise real pagination,
+combined filters, and page reset. It also tests recovery from an HTTP 503 and
+cancellation of a superseded search. Failed runs retain `trace.zip`
 under `dist/e2e-results/`. CI uploads available traces as `browser-failure-traces`.
 
 Make focused Conventional Commits with working code and its tests together.

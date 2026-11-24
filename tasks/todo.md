@@ -1,8 +1,8 @@
 # Stock Vision task checklist
 
 Status: PRs #7–9 have merged, including toolkit, table, CI, and browser coverage.
-Task 9 merged in PR #10. Task 10 adds backend search and sector filtering.
-Task 10a connects the browser controls in the same feature PR.
+Task 9 merged in PR #10. PR #11 delivers search and sector filtering end to end
+through Tasks 10 and 10a.
 Fresh-session toolkit discovery
 remains explicitly unverified.
 
@@ -524,12 +524,13 @@ The frontend CI job installs Chromium, runs the test, and uploads failure traces
 
 **Acceptance criteria:**
 
-- [ ] Search and sector controls call the typed API and reset offset when changed.
-- [ ] Browser tests cover combined filters, empty/reset behavior and stale responses.
+- [x] Search and sector controls call the typed API and reset offset when changed.
+- [x] Browser tests cover combined filters, empty/reset behavior and stale responses.
 
 **Verification:**
 
-- [ ] Frontend lint/build and focused browser tests pass.
+- [x] Frontend lint and build pass. Three Chromium tests cover browsing and
+  recovery, combined filters at 320px, and cancellation of a superseded request.
 
 **Dependencies:** 10
 
@@ -541,8 +542,8 @@ The frontend CI job installs Chromium, runs the test, and uploads failure traces
 
 ## Checkpoint: after tasks 10-10a
 
-- [ ] API and browser tests verify filtering before pagination and page reset.
-- [ ] Complete the vertical feature within the current PR before starting numeric filters.
+- [x] API and browser tests verify filtering before pagination and page reset.
+- [x] Search and sector filtering are complete in PR #11 before numeric filters.
 
 ## Task 11: Filter financial ranges
 
