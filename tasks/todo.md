@@ -2,8 +2,8 @@
 
 Status: PRs #7–9 have merged, including toolkit, table, CI, and browser coverage.
 Task 9 merged in PR #10, and search and sector filtering merged in PR #11.
-Financial range filtering merged in PR #12. PR #13 completes sorting in the
-API and table. The Docker phase follows after merge.
+Financial ranges merged in PR #12 and sorting merged in PR #13. The Docker
+runtime is packaged and verified locally. Task 14 adds Docker CI.
 Fresh-session toolkit discovery
 remains explicitly unverified.
 
@@ -642,19 +642,22 @@ The frontend CI job installs Chromium, runs the test, and uploads failure traces
 
 - [x] Applicable local tests, lint, and builds pass.
 - [x] Review the diff and verify keyboard sorting against the real API in Chromium.
-- [ ] User review and merge after the sorting PR's checks pass.
+- [x] Sorting PR #13 merged after its checks passed.
 
 ## Task 13: Package the application
 
 **Description:** Build frontend assets and serve them with FastAPI in a final runtime image.
 
 **Acceptance criteria:**
-- [ ] Image installs the built Python package and starts without development dependencies or source-path overrides
-- [ ] sample page and API work on one origin
-- [ ] API errors remain JSON and are not masked by frontend fallback.
+- [x] The non-root runtime installs the built wheel without development dependencies or source-path overrides.
+- [x] The sample page and API work on one origin.
+- [x] API errors remain JSON.
 
 **Verification:**
-- [ ] docker build -t stock-vision:local .; start image and run smoke assertions for health, API and HTML/assets; stop container.
+- [x] Built `stock-vision:local` and ran `scripts/smoke_container.py` against
+  a temporary localhost port. Chromium rendered all six rows through the
+  same-origin API. Verified UID 10001, the installed wheel, and absence of
+  pytest, Node, and source overrides. Stopped the verification container.
 
 **Dependencies:** 12a
 
