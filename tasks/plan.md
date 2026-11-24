@@ -9,17 +9,15 @@ proposal for review; no application implementation is included in the planning P
 
 ## Current state
 
-Tasks 1–9, including 4a/4b and 6a, are implemented: the Python 3.15 src package exposes
-a sample browsing API, and the React/TypeScript frontend displays a paginated table.
-Forty Python tests pass; locked frontend install/build and request-state browser
-checks have passed locally. CI checks Python tests, Ruff, hooks, branch/commit
-conventions, PR titles, clean wheel installation, and the locked frontend build.
-The browser test covers the built frontend and real API pagination, with traces
-retained on failure. The Docker image runs the installed backend wheel and
-serves the built frontend from the same origin. The Docker smoke workflow tests
-the built image and retains container logs on failure. The local
-toolkit is copied and routed in merged PR #7;
-fresh-session automatic discovery remains unverified.
+All 25 checklist tasks are implemented. The sample screener supports search,
+sector and financial filters, sorting, and pagination. The Docker image runs the
+installed backend wheel and serves the frontend and API from the same origin.
+A fresh Windows checkout passed the source and Docker launch steps, 75 pytest
+cases, frontend lint and build, five Chromium tests, and the container smoke
+test. GitHub Actions checks source, browser, and Docker behavior and retains
+failure artifacts. PR #15 contains the Docker workflow and the final runbook.
+The local toolkit merged in PR #7. Fresh-session automatic skill discovery
+remains unverified.
 
 ## Architecture decisions
 
@@ -183,8 +181,8 @@ and build verification have merged in PR #8. Browser coverage merged in PR #9.
 The runnable sample guide merged in PR #10, and search and sector filtering
 merged in PR #11. Tasks 11 and 11a add financial ranges to the API and browser.
 Financial ranges merged in PR #12. Tasks 12 and 12a add API and table sorting.
-Sorting merged in PR #13. Docker packaging merged in PR #14. Task 14 adds
-Docker smoke checks, and Task 15 finishes the runbook.
+Sorting merged in PR #13. Docker packaging merged in PR #14. Tasks 14 and 15
+add Docker smoke checks and the verified runbook in PR #15.
 
 Keep skills in `.agents/skills/<name>/` and instructions in
 `.agents/instructions/`. Preserve the four existing repository skills and their
