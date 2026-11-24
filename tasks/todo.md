@@ -2,7 +2,8 @@
 
 Status: PRs #7–9 have merged, including toolkit, table, CI, and browser coverage.
 Task 9 merged in PR #10, and search and sector filtering merged in PR #11.
-The API and browser support financial ranges in PR #12. Sorting follows after merge.
+Financial range filtering merged in PR #12. The sorting API is implemented.
+Task 12a connects the table controls in the same feature PR.
 Fresh-session toolkit discovery
 remains explicitly unverified.
 
@@ -599,12 +600,13 @@ The frontend CI job installs Chromium, runs the test, and uploads failure traces
 **Description:** Add validated sort keys and direction with deterministic results.
 
 **Acceptance criteria:**
-- [ ] Sorting preserves filters
-- [ ] null values sort last both ways
-- [ ] ties use symbol consistently across page boundaries.
+- [x] Sorting preserves filters.
+- [x] Null values sort last in both directions.
+- [x] Equal values use ascending symbol order across page boundaries.
 
 **Verification:**
-- [ ] API and unit sort/tie/null tests pass; browser sort/reset tests follow in Task 12a.
+- [x] API and unit tests cover sort options, nulls, ties, and filter preservation.
+  Browser sort and reset tests follow in Task 12a.
 
 **Dependencies:** 11a
 

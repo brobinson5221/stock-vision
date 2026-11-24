@@ -155,6 +155,37 @@ def test_invalid_stock_ranges_return_validation_errors(client, query):
     assert response.json()["detail"]
 
 
+@pytest.mark.parametrize(
+    ("query", "symbols"),
+    [
+        ("sort_by=price&sort_dir=asc&q=demo&sector=Technology&min_price=75", ["DEMOD", "DEMOA"]),
+        ("sort_by=market_cap&sort_dir=asc", ["DEMOE", "DEMOF", "DEMOB", "DEMOD", "DEMOA", "DEMOC"]),
+        (
+            "sort_by=market_cap&sort_dir=desc",
+            ["DEMOA", "DEMOD", "DEMOB", "DEMOF", "DEMOE", "DEMOC"],
+        ),
+        ("sort_by=pe_ratio&sort_dir=desc", ["DEMOA", "DEMOD", "DEMOF", "DEMOC", "DEMOE", "DEMOB"]),
+        ("sort_by=sector&sort_dir=asc", ["DEMOE", "DEMOB", "DEMOF", "DEMOC", "DEMOA", "DEMOD"]),
+        ("sort_by=name&sort_dir=desc", ["DEMOF", "DEMOC", "DEMOE", "DEMOD", "DEMOB", "DEMOA"]),
+        ("sort_by=symbol&sort_dir=desc", ["DEMOF", "DEMOE", "DEMOD", "DEMOC", "DEMOB", "DEMOA"]),
+    ],
+)
+def test_stock_sorting(query, symbols):
+    with TestClient(app) as client:
+        response = client.get(f"/api/stocks?{query}")
+    assert response.status_code == 200
+    data = response.json()
+    assert [stock["symbol"] for stock in data["items"]] == symbols
+    assert data["total"] == len(symbols)
+
+
+@pytest.mark.parametrize("query", ["sort_by=unknown", "sort_dir=down"])
+def test_invalid_stock_sort_returns_validation_error(client, query):
+    response = client.get(f"/api/stocks?{query}")
+    assert response.status_code == 422
+    assert response.json()["detail"]
+
+
 def test_empty_source(monkeypatch):
     monkeypatch.setitem(
         app.dependency_overrides,

@@ -12,7 +12,7 @@ def _in_range(value: float | None, lower: float | None, upper: float | None) -> 
 
 
 def browse_stocks(source: StockDataset, page: PageQuery) -> StockPage:
-    """Filter and order by symbol before slicing the matching stocks."""
+    """Filter and sort before slicing the matching stocks."""
     search = page.q.strip().casefold()
     sector = page.sector.strip().casefold()
     matches = (
@@ -25,6 +25,17 @@ def browse_stocks(source: StockDataset, page: PageQuery) -> StockPage:
         and _in_range(stock.pe_ratio, page.min_pe_ratio, page.max_pe_ratio)
     )
     ordered = sorted(matches, key=lambda stock: stock.symbol)
+    if page.sort_by != "symbol" or page.sort_dir == "desc":
+        descending = page.sort_dir == "desc"
+
+        def sort_key(stock):
+            value = getattr(stock, page.sort_by)
+            # Reverse the null rank with the sort direction so nulls always come last.
+            null_rank = (value is not None) if descending else (value is None)
+            return (null_rank, value)
+
+        # Python's stable sort preserves ascending symbol order for equal keys.
+        ordered.sort(key=sort_key, reverse=descending)
     return StockPage(
         items=tuple(ordered[page.offset : page.offset + page.limit]),
         total=len(ordered),

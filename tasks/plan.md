@@ -180,7 +180,8 @@ fresh-session automatic discovery remains unverified. PR #7 has merged; task 6a
 and build verification have merged in PR #8. Browser coverage merged in PR #9.
 The runnable sample guide merged in PR #10, and search and sector filtering
 merged in PR #11. Tasks 11 and 11a add financial ranges to the API and browser.
-Sorting follows in Task 12.
+Financial ranges merged in PR #12. Task 12 adds API sorting. Task 12a connects
+the table controls before the Docker phase.
 
 Keep skills in `.agents/skills/<name>/` and instructions in
 `.agents/instructions/`. Preserve the four existing repository skills and their

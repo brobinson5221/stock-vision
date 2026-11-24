@@ -93,6 +93,13 @@ open-ended range. A stock with an unavailable metric is excluded only when
 that metric has an active range. Malformed, nonfinite, or reversed bounds
 return HTTP 422, as do negative price or market cap bounds. P/E may be negative.
 
+Use `sort_by` with `symbol`, `name`, `sector`, `price`, `market_cap`, or
+`pe_ratio` and set `sort_dir` to `asc` or `desc`. The default is symbol
+ascending. For example, `/api/stocks?sector=Technology&sort_by=price&sort_dir=desc`
+returns DEMOA before DEMOD. Sorting happens after filtering and before
+pagination. Unavailable values appear last in either direction, and equal
+values use ascending symbol order. Unsupported sort options return HTTP 422.
+
 ## Run the frontend
 
 From the repository root in terminal 2, start Vite:
