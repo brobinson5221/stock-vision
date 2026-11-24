@@ -2,7 +2,7 @@
 
 Status: PRs #7–9 have merged, including toolkit, table, CI, and browser coverage.
 Task 9 merged in PR #10, and search and sector filtering merged in PR #11.
-The financial range API is implemented. Task 11a connects its browser controls.
+The API and browser support financial ranges in PR #12. Sorting follows after merge.
 Fresh-session toolkit discovery
 remains explicitly unverified.
 
@@ -573,12 +573,13 @@ The frontend CI job installs Chromium, runs the test, and uploads failure traces
 
 **Acceptance criteria:**
 
-- [ ] Controls preserve search/sector and reset offset when bounds change.
-- [ ] Validation errors are visible and null metrics obey the API contract.
+- [x] Controls preserve search and sector and reset offset when bounds change.
+- [x] Validation errors are visible and null metrics obey the API contract.
 
 **Verification:**
 
-- [ ] Frontend lint/build and combined-filter browser tests pass.
+- [x] Frontend lint, build, and all four Chromium tests pass. The range test
+  covers inclusive and invalid bounds, null metrics, and clearing at 320px.
 
 **Dependencies:** 11
 
@@ -590,8 +591,8 @@ The frontend CI job installs Chromium, runs the test, and uploads failure traces
 
 ## Checkpoint: after tasks 11-11a
 
-- [ ] API and browser tests pass for inclusive/reversed bounds and multi-page results.
-- [ ] Finish this vertical feature before starting sort controls.
+- [x] API and browser tests pass for inclusive and reversed bounds and pagination.
+- [x] Financial range filtering is complete in PR #12 before sort controls.
 
 ## Task 12: Sort screening results
 

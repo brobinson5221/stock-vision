@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { fetchStocks, type StockPage, type StockQuery } from "./api";
+import { fetchStocks, StockRangeError, type StockPage, type StockQuery } from "./api";
+import RangeFilters from "./RangeFilters";
 import StockTable from "./StockTable";
 
 type State =
   | { status: "loading" }
   | { status: "error" }
+  | { status: "invalid-range" }
   | { status: "ready"; page: StockPage };
 
 // shortcut: sectors match the packaged sample, use API-provided options when the data source changes.
@@ -12,7 +14,7 @@ const sectors = ["Energy", "Healthcare", "Industrials", "Technology"];
 
 export default function Screener() {
   const [attempt, setAttempt] = useState(0);
-  const [query, setQuery] = useState<StockQuery>({ limit: 50, offset: 0, q: "", sector: "" });
+  const [query, setQuery] = useState<StockQuery>({ limit: 50, offset: 0, q: "", sector: "", ranges: {} });
   const [state, setState] = useState<State>({ status: "loading" });
   const { offset, limit, q, sector } = query;
 
@@ -31,8 +33,10 @@ export default function Screener() {
       (page) => {
         if (!controller.signal.aborted) setState({ status: "ready", page });
       },
-      () => {
-        if (!controller.signal.aborted) setState({ status: "error" });
+      (error: unknown) => {
+        if (!controller.signal.aborted) {
+          setState({ status: error instanceof StockRangeError ? "invalid-range" : "error" });
+        }
       },
     );
     return () => controller.abort();
@@ -55,8 +59,14 @@ export default function Screener() {
             {sectors.map((option) => <option key={option}>{option}</option>)}
           </select>
         </div>
-        <button type="button" onClick={() => changeFilters("", "")}>Clear filters</button>
+        <button type="button" onClick={() => changeQuery({ limit, offset: 0, q: "", sector: "", ranges: {} })}>
+          Clear filters
+        </button>
       </div>
+      <RangeFilters ranges={query.ranges} invalid={state.status === "invalid-range"}
+        onChange={(bound, value) => changeQuery({
+          ...query, offset: 0, ranges: { ...query.ranges, [bound]: value },
+        })} />
       <button type="button" onClick={() => {
         setState({ status: "loading" });
         setAttempt((value) => value + 1);
