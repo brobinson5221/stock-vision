@@ -82,6 +82,31 @@ def test_out_of_range_page_keeps_total(client):
     assert response.json()["total"] == 105
 
 
+@pytest.mark.parametrize(
+    ("params", "symbols"),
+    [
+        ({"q": "moB"}, ["DEMOB"]),
+        ({"q": "aLPha", "sector": "TECHNOLOGY"}, ["DEMOA"]),
+        ({"q": "Alpha", "sector": "Energy"}, []),
+        ({"q": " ", "sector": " "}, ["DEMOA", "DEMOB", "DEMOC", "DEMOD", "DEMOE", "DEMOF"]),
+        ({"sector": "Health"}, []),
+    ],
+)
+def test_stock_search_and_sector_filters(params, symbols):
+    with TestClient(app) as client:
+        response = client.get("/api/stocks", params=params)
+    assert response.status_code == 200
+    data = response.json()
+    assert [stock["symbol"] for stock in data["items"]] == symbols
+    assert data["total"] == len(symbols)
+
+
+@pytest.mark.parametrize("field", ["q", "sector"])
+def test_overlong_stock_filters_are_rejected(client, field):
+    response = client.get("/api/stocks", params={field: "x" * 101})
+    assert response.status_code == 422
+
+
 def test_empty_source(monkeypatch):
     monkeypatch.setitem(
         app.dependency_overrides,

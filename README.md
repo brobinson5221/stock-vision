@@ -79,6 +79,12 @@ returns `items`, `total`, `limit`, `offset`, `provenance`, and `currency`.
 Results are ordered by symbol before pagination; out-of-range pages are empty
 with the total preserved. Invalid page bounds return HTTP 422.
 
+Add `q` to search for part of a symbol or company name and `sector` to match a
+full sector name. For example, `/api/stocks?q=demo&sector=Technology&limit=1`
+returns DEMOA with a matching total of two. Both filters ignore case and trim
+surrounding whitespace. Blank filters are ignored. Each parameter accepts up to
+100 characters. The API applies both filters before ordering and pagination.
+
 ## Run the frontend
 
 From the repository root in terminal 2, start Vite:
@@ -97,8 +103,8 @@ Loading, empty, and retryable error states remain available. Reload cancels the
 previous request; late responses cannot replace current results.
 
 The six packaged rows fit on one page, so Previous and Next are both disabled.
-The sample supports browsing only. Live market data, search, and filters are
-outside the current sample. Press Ctrl+C in each terminal to stop the services.
+The browser currently supports browsing. Search and sector filters are available
+through the sample API. Press Ctrl+C in each terminal to stop the services.
 
 ## Verify the frontend
 

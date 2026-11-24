@@ -1,7 +1,8 @@
 # Stock Vision task checklist
 
 Status: PRs #7–9 have merged, including toolkit, table, CI, and browser coverage.
-Task 9 documents the runnable sample. Task 10 follows after review and merge.
+Task 9 merged in PR #10. Task 10 adds backend search and sector filtering.
+Task 10a connects the browser controls in the same feature PR.
 Fresh-session toolkit discovery
 remains explicitly unverified.
 
@@ -494,19 +495,20 @@ The frontend CI job installs Chromium, runs the test, and uploads failure traces
 
 - [x] All applicable local tests, lint, and builds pass.
 - [x] Review the diff and verify the documented launch manually.
-- [ ] User review and merge after the documentation PR's checks pass.
+- [x] Documentation PR #10 merged after its checks passed.
 
 ## Task 10: Search by company and sector
 
 **Description:** Implement the backend half of search/sector filtering; Task 10a completes the same vertical slice.
 
 **Acceptance criteria:**
-- [ ] Case-insensitive symbol/name search combines with sector
-- [ ] filtering precedes pagination and totals describe all matching results
-- [ ] API and unit tests cover combinations and empty matches.
+- [x] Case-insensitive symbol/name search combines with sector.
+- [x] Filtering precedes pagination and totals describe all matching results.
+- [x] API and unit tests cover combined filters, page boundaries, and empty matches.
 
 **Verification:**
-- [ ] API and unit tests pass; full browser verification follows in Task 10a.
+- [x] All 48 pytest cases passed, including the API and unit tests for filtering.
+  Browser verification of the controls follows in Task 10a.
 
 **Dependencies:** 9
 

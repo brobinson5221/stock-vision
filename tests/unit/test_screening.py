@@ -28,3 +28,10 @@ def test_empty_and_out_of_range_pages():
     page = browse_stocks(load_sample_stocks(), PageQuery(offset=100))
     assert page.items == ()
     assert page.total == len(load_sample_stocks().items)
+
+
+def test_filtering_precedes_pagination():
+    source = StockDataset(items=tuple(reversed(load_sample_stocks().items)))
+    page = browse_stocks(source, PageQuery(q=" demo ", sector=" teCHNOLOGY ", limit=1, offset=1))
+    assert [stock.symbol for stock in page.items] == ["DEMOD"]
+    assert page.total == 2  # noqa: PLR2004 -- Two Technology rows match.

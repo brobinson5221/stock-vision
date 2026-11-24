@@ -25,6 +25,8 @@ class Stock(BaseModel):
 class PageQuery(BaseModel):
     limit: int = Field(default=50, gt=0, le=100)
     offset: int = Field(default=0, ge=0)
+    q: str = Field(default="", max_length=100, description="Substring of symbol or company name")
+    sector: str = Field(default="", max_length=100, description="Exact sector name")
 
 
 class StockDataset(BaseModel):
