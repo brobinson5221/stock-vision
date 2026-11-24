@@ -190,6 +190,11 @@ On PRs it also validates the branch name and every commit in the PR base-to-head
 range with Commitizen. The [PR title workflow](.github/workflows/pr-title.yml)
 checks Conventional Commit titles.
 
+The [Docker smoke workflow](.github/workflows/docker.yml) builds and tests the
+runtime image on pushes and pull requests. It waits up to 30 seconds for API
+health, checks the API and frontend assets, and removes the test container.
+If the container checks fail, look for the `docker-smoke-logs` artifact on the run.
+
 To check the local commit range after fetching `origin/main`:
 
 ```sh

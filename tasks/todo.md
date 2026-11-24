@@ -2,8 +2,8 @@
 
 Status: PRs #7–9 have merged, including toolkit, table, CI, and browser coverage.
 Task 9 merged in PR #10, and search and sector filtering merged in PR #11.
-Financial ranges merged in PR #12 and sorting merged in PR #13. The Docker
-runtime is packaged and verified locally. Task 14 adds Docker CI.
+Financial ranges merged in PR #12, sorting in PR #13, and Docker packaging
+in PR #14. The Docker smoke workflow is implemented. Task 15 finishes the runbook.
 Fresh-session toolkit discovery
 remains explicitly unverified.
 
@@ -672,12 +672,15 @@ The frontend CI job installs Chromium, runs the test, and uploads failure traces
 **Description:** Build and test the final container in CI.
 
 **Acceptance criteria:**
-- [ ] CI tests the image it built
-- [ ] waits are bounded
-- [ ] container logs are retained on failure and cleanup always runs.
+- [x] CI starts and tests the image built in the same job.
+- [x] API readiness is bounded to 30 seconds, with a separate smoke test timeout.
+- [x] Failure logs are collected before container cleanup, which runs on success,
+  failure, and cancellation.
 
 **Verification:**
-- [ ] Run container job; verify health/API/static assets; inspect latest Actions.
+- [x] Replayed the workflow commands locally. Health, API, HTML, and assets
+  passed. A forced smoke failure produced logs, and both containers were removed.
+- Verify the latest Docker smoke run in GitHub Actions before review.
 
 **Dependencies:** 13
 

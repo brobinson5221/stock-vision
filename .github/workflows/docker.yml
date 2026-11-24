@@ -1,0 +1,57 @@
+name: Docker smoke
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@18d369b23da25a81e9458561248e1aafff6a70fa # v10.3.1
+        with:
+          python-version: "3.15"
+
+      - name: Build runtime image
+        run: docker build --tag stock-vision:ci .
+
+      - name: Start the built image
+        run: docker run --detach --pull=never --name stock-vision-smoke --publish 127.0.0.1:8000:8000 stock-vision:ci
+
+      - name: Wait for API health
+        run: |
+          timeout 30s bash -c 'until curl --fail --silent --max-time 2 http://127.0.0.1:8000/api/health >/dev/null; do sleep 1; done'
+
+      - name: Smoke test API and frontend assets
+        timeout-minutes: 2
+        run: uv run --no-project --python 3.15 python scripts/smoke_container.py
+
+      - name: Collect container logs on failure
+        if: ${{ failure() }}
+        timeout-minutes: 1
+        run: |
+          if docker container inspect stock-vision-smoke >/dev/null 2>&1; then
+            docker logs stock-vision-smoke > "$RUNNER_TEMP/stock-vision-container.log" 2>&1
+          fi
+
+      - name: Remove smoke container
+        if: ${{ always() }}
+        timeout-minutes: 1
+        run: |
+          if docker container inspect stock-vision-smoke >/dev/null 2>&1; then
+            docker container rm --force stock-vision-smoke
+          fi
+
+      - name: Upload container logs on failure
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: docker-smoke-logs
+          path: ${{ runner.temp }}/stock-vision-container.log
+          if-no-files-found: ignore
