@@ -8,8 +8,23 @@ tooling, and convention checks.
 The packaged sample source contains six fictional companies with synthetic USD
 values, explicitly labeled `synthetic-sample`; these are not market quotes.
 The sample API and paginated stock table run locally and are tested in Chromium.
-Docker packaging is still pending. See the
+The Docker image serves both from one origin. See the
 [implementation plan](tasks/plan.md) and [task checklist](tasks/todo.md).
+
+## Run with Docker
+
+With Docker running and localhost port 8000 free, build and run from the
+repository root:
+
+```sh
+docker build -t stock-vision:local .
+docker run --rm -p 127.0.0.1:8000:8000 stock-vision:local
+```
+
+Open [the screener](http://127.0.0.1:8000/). The same process serves the API at
+`/api` and the built frontend at `/`. In a second terminal,
+`uv run --locked python scripts/smoke_container.py` checks the running image.
+Press Ctrl+C in the Docker terminal to stop it.
 
 ## Set up locally
 

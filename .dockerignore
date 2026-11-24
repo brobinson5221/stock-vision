@@ -1,0 +1,10 @@
+.git
+.agents
+.venv
+.vscode
+**/__pycache__
+**/.pytest_cache
+**/.ruff_cache
+**/dist
+**/node_modules
+**/.env*

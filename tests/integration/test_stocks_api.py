@@ -2,9 +2,27 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from stock_vision.main import app
+from stock_vision.main import app, create_app
 from stock_vision.stocks.schemas import StockDataset
 from stock_vision.stocks.source import load_sample_stocks
+
+
+def test_served_frontend_keeps_api_errors_json(tmp_path):
+    assets = tmp_path / "assets"
+    assets.mkdir()
+    (tmp_path / "index.html").write_text('<script src="/assets/app.js"></script>', encoding="utf-8")
+    (assets / "app.js").write_text('fetch("/api/stocks");', encoding="utf-8")
+
+    with TestClient(create_app(tmp_path)) as client:
+        assert client.get("/").headers["content-type"].startswith("text/html")
+        assert client.get("/assets/app.js").text == 'fetch("/api/stocks");'
+        assert client.get("/api/health").json() == {"status": "ok"}
+        missing = client.get("/api/missing")
+        assert missing.status_code == 404
+        assert missing.json() == {"detail": "Not Found"}
+        invalid = client.get("/api/stocks?limit=0")
+        assert invalid.status_code == 422
+        assert invalid.json()["detail"]
 
 
 @pytest.fixture
