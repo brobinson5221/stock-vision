@@ -1,7 +1,8 @@
 # Stock Vision task checklist
 
 Status: PRs #7–9 have merged, including toolkit, table, CI, and browser coverage.
-Task 9 documents the runnable sample. Task 10 follows after review and merge.
+Task 9 merged in PR #10. PR #11 delivers search and sector filtering end to end
+through Tasks 10 and 10a.
 Fresh-session toolkit discovery
 remains explicitly unverified.
 
@@ -494,19 +495,20 @@ The frontend CI job installs Chromium, runs the test, and uploads failure traces
 
 - [x] All applicable local tests, lint, and builds pass.
 - [x] Review the diff and verify the documented launch manually.
-- [ ] User review and merge after the documentation PR's checks pass.
+- [x] Documentation PR #10 merged after its checks passed.
 
 ## Task 10: Search by company and sector
 
 **Description:** Implement the backend half of search/sector filtering; Task 10a completes the same vertical slice.
 
 **Acceptance criteria:**
-- [ ] Case-insensitive symbol/name search combines with sector
-- [ ] filtering precedes pagination and totals describe all matching results
-- [ ] API and unit tests cover combinations and empty matches.
+- [x] Case-insensitive symbol/name search combines with sector.
+- [x] Filtering precedes pagination and totals describe all matching results.
+- [x] API and unit tests cover combined filters, page boundaries, and empty matches.
 
 **Verification:**
-- [ ] API and unit tests pass; full browser verification follows in Task 10a.
+- [x] All 48 pytest cases passed, including the API and unit tests for filtering.
+  Browser verification of the controls follows in Task 10a.
 
 **Dependencies:** 9
 
@@ -522,12 +524,13 @@ The frontend CI job installs Chromium, runs the test, and uploads failure traces
 
 **Acceptance criteria:**
 
-- [ ] Search and sector controls call the typed API and reset offset when changed.
-- [ ] Browser tests cover combined filters, empty/reset behavior and stale responses.
+- [x] Search and sector controls call the typed API and reset offset when changed.
+- [x] Browser tests cover combined filters, empty/reset behavior and stale responses.
 
 **Verification:**
 
-- [ ] Frontend lint/build and focused browser tests pass.
+- [x] Frontend lint and build pass. Three Chromium tests cover browsing and
+  recovery, combined filters at 320px, and cancellation of a superseded request.
 
 **Dependencies:** 10
 
@@ -539,8 +542,8 @@ The frontend CI job installs Chromium, runs the test, and uploads failure traces
 
 ## Checkpoint: after tasks 10-10a
 
-- [ ] API and browser tests verify filtering before pagination and page reset.
-- [ ] Complete the vertical feature within the current PR before starting numeric filters.
+- [x] API and browser tests verify filtering before pagination and page reset.
+- [x] Search and sector filtering are complete in PR #11 before numeric filters.
 
 ## Task 11: Filter financial ranges
 

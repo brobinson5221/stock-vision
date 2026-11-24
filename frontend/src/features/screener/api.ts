@@ -16,6 +16,13 @@ export interface StockPage {
   currency: "USD";
 }
 
+export interface StockQuery {
+  limit: number;
+  offset: number;
+  q: string;
+  sector: string;
+}
+
 function isStock(value: unknown): value is Stock {
   if (!value || typeof value !== "object") return false;
   const stock = value as Partial<Stock>;
@@ -31,8 +38,12 @@ function isStock(value: unknown): value is Stock {
   );
 }
 
-export async function fetchStocks(signal: AbortSignal, query: URLSearchParams): Promise<StockPage> {
-  const response = await fetch(`/api/stocks?${query}`, { signal });
+export async function fetchStocks(signal: AbortSignal, query: StockQuery): Promise<StockPage> {
+  const params = new URLSearchParams({ limit: String(query.limit), offset: String(query.offset) });
+  const search = query.q.trim();
+  if (search) params.set("q", search);
+  if (query.sector) params.set("sector", query.sector);
+  const response = await fetch(`/api/stocks?${params}`, { signal });
   if (!response.ok) throw new Error(`Stock request failed (${response.status}).`);
   const page: Partial<StockPage> | null = await response.json();
   if (
@@ -43,8 +54,7 @@ export async function fetchStocks(signal: AbortSignal, query: URLSearchParams): 
     typeof page.offset !== "number" || !Number.isSafeInteger(page.offset) || page.offset < 0 ||
     page.items.length > page.limit || page.items.length > page.total ||
     page.provenance !== "synthetic-sample" || page.currency !== "USD" ||
-    page.offset !== Number(query.get("offset") ?? 0) ||
-    page.limit !== Number(query.get("limit") ?? 50)
+    page.offset !== query.offset || page.limit !== query.limit
   ) throw new Error("Invalid stock response.");
   return page as StockPage;
 }
