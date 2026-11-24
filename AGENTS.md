@@ -19,13 +19,15 @@ Run the sample API with `uv run --locked uvicorn stock_vision.main:app --reload`
 Health is `/api/health`; browsing is `/api/stocks`. Routes delegate ordering and
 pagination to `stocks/service.py`, using the injectable sample source.
 
-Use Node.js 24 for frontend work. Run `npm --prefix frontend ci`, then
-`npm --prefix frontend run dev`. Validate with `npm --prefix frontend run lint`
-and `npm --prefix frontend run build`
+Use Node.js 24 for frontend work. Run `npm --prefix frontend ci`, then follow
+the [two-terminal launch steps](README.md#run-the-sample-api). Validate with
+`npm --prefix frontend run lint` and `npm --prefix frontend run build`
 (TypeScript checking plus Vite production build). Keep npm's lockfile with
 dependency changes. `App.tsx` composes the page; `features/screener/` owns API
 validation and request state. Vite proxies `/api` to `127.0.0.1:8000`; run both
 processes for local verification. Preserve cancellation and stale-result guards.
+After building, run `npm --prefix frontend run test:e2e` with Chromium installed
+and ports 8000 and 4173 free. See [frontend verification](README.md#verify-the-frontend).
 
 ## Setup and dependencies
 

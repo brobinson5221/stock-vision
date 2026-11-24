@@ -1,7 +1,8 @@
 # Stock Vision task checklist
 
-Status: toolkit PR #7 and tasks 6a–7 in PR #8 have merged. Task 8 is implemented.
-Next: task 9 in the browser-test PR. Fresh-session toolkit discovery
+Status: PRs #7–9 have merged, including toolkit, table, CI, and browser coverage.
+Task 9 documents the runnable sample. Task 10 follows after review and merge.
+Fresh-session toolkit discovery
 remains explicitly unverified.
 
 Baseline checks (from repository root): `uv run --locked ruff check .`,
@@ -472,11 +473,14 @@ The frontend CI job installs Chromium, runs the test, and uploads failure traces
 **Description:** Record exact launch/test commands and sample limitations.
 
 **Acceptance criteria:**
-- [ ] Fresh checkout instructions launch both processes
-- [ ] AGENTS and checklist describe actual commands and state.
+- [x] Fresh checkout instructions launch both processes.
+- [x] AGENTS and checklist describe actual commands and state.
 
 **Verification:**
-- [ ] Follow run instructions; baseline, API, frontend and browser checks; latest CI.
+- [x] Followed the setup and launch guide in a fresh Windows clone. API health,
+  stock pagination, and the rendered six-row table were verified. Baseline checks,
+  40 pytest tests, frontend lint and build, and the Chromium test passed.
+- Verify the latest GitHub Actions runs on the documentation PR before review.
 
 **Dependencies:** 8
 
@@ -488,9 +492,9 @@ The frontend CI job installs Chromium, runs the test, and uploads failure traces
 
 ## Checkpoint: after task 9
 
-- [ ] All currently applicable tests, lint and builds pass; no checks bypassed.
-- [ ] Review diff and verify the capability introduced above manually.
-- [ ] Open/update the single scoped PR, verify latest CI, and wait for user review and merge before the next PR.
+- [x] All applicable local tests, lint, and builds pass.
+- [x] Review the diff and verify the documented launch manually.
+- [ ] User review and merge after the documentation PR's checks pass.
 
 ## Task 10: Search by company and sector
 
