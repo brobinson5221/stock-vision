@@ -9,7 +9,8 @@ Keep this guidance updated as the project grows.
 Stock Vision has an installable `src/stock_vision/` package and pytest tests,
 including standard-library unittest cases for its branch validator. A minimal
 React/TypeScript Vite frontend lives in `frontend/src/`, with a stock table and
-page controls. Browser tests and the container remain pending. Follow
+page controls. The Chromium browser test exercises the built frontend and real
+API routes. The container remains pending. Follow
 `tasks/plan.md` and `tasks/todo.md`.
 Keep Python tests separate in `tests/`.
 Create modules only when their task introduces behavior.

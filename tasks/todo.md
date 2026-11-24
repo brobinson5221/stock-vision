@@ -1,7 +1,7 @@
 # Stock Vision task checklist
 
-Status: toolkit PR #7 merged. Tasks 6a and 7 are implemented in draft PR #8.
-Next: tasks 8–9 in the same sample-browsing PR. Fresh-session toolkit discovery
+Status: toolkit PR #7 and tasks 6a–7 in PR #8 have merged. Task 8 is implemented.
+Next: task 9 in the browser-test PR. Fresh-session toolkit discovery
 remains explicitly unverified.
 
 Baseline checks (from repository root): `uv run --locked ruff check .`,
@@ -448,16 +448,20 @@ and Node.js job. `frontend/package.json` runs Oxlint without a separate config f
 **Description:** Add a small browser test against the real local API and built frontend.
 
 **Acceptance criteria:**
-- [ ] Browser loads sample rows and traverses multiple pages
-- [ ] error recovery is tested
-- [ ] failure traces are retained and services cleaned up.
+- [x] Browser loads sample rows and traverses multiple pages from the real API.
+- [x] Reload recovers after a single HTTP 503.
+- [x] Failure traces are retained and services cleaned up.
 
 **Verification:**
-- [ ] npm --prefix frontend run test:e2e; inspect a deliberate local failure artifact.
+- [x] `npm --prefix frontend run test:e2e` passes. A deliberate local assertion
+  failure retained a trace with network and DOM snapshots. Both ports were
+  released after the test run.
 
 **Dependencies:** 7
 
-**Files likely touched:** `frontend/playwright.config.ts`, `frontend/tests/screener.spec.ts`, `frontend/package.json`, `frontend/package-lock.json`, `.github/workflows/checks.yml`.
+**Implementation:** Playwright starts Vite preview and `tests/e2e_server.py`,
+which extends the packaged sample through FastAPI's dependency override.
+The frontend CI job installs Chromium, runs the test, and uploads failure traces.
 
 **Estimated scope:** Medium (3-5 files maximum; task 1 is small).
 
