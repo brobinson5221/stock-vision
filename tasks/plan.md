@@ -178,8 +178,9 @@ implemented in toolkit PR #7, following merged plan amendment #6. Root
 metadata, and routing checks are recorded in [the inventory](../.agents/toolkit.md);
 fresh-session automatic discovery remains unverified. PR #7 has merged; task 6a
 and build verification have merged in PR #8. Browser coverage merged in PR #9.
-The runnable sample guide merged in PR #10. Tasks 10 and 10a add search and
-sector filtering to the API and browser. Numeric filters follow in Task 11.
+The runnable sample guide merged in PR #10, and search and sector filtering
+merged in PR #11. Tasks 11 and 11a add financial ranges to the API and browser.
+Sorting follows in Task 12.
 
 Keep skills in `.agents/skills/<name>/` and instructions in
 `.agents/instructions/`. Preserve the four existing repository skills and their

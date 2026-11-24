@@ -89,3 +89,50 @@ test("cancels a pending search when a newer search returns", async ({ page }) =>
     releaseResponse.resolve();
   }
 });
+
+test("combines financial ranges with search and sector and shows invalid bounds", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 720 });
+  await page.goto("/");
+
+  const price = page.getByRole("group", { name: "Price (USD)" });
+  const minimumPrice = price.getByLabel("Minimum");
+  const maximumPrice = price.getByLabel("Maximum");
+  const minimumCap = page.getByRole("group", { name: "Market cap (USD)" }).getByLabel("Minimum");
+  const maximumPE = page.getByRole("group", { name: "P/E ratio" }).getByLabel("Maximum");
+  const search = page.getByRole("searchbox", { name: "Symbol or company" });
+  const sector = page.getByRole("combobox", { name: "Sector" });
+  const status = page.getByRole("status");
+  const alert = page.getByRole("alert");
+
+  await page.getByRole("button", { name: "Next" }).click();
+  await expect(status).toHaveText("Showing 51–51 of 51 stocks.");
+  await maximumPrice.fill("75");
+  await expect(status).toHaveText("Showing 1–5 of 5 stocks.");
+  await expect(page.getByRole("button", { name: "Previous" })).toBeDisabled();
+
+  await minimumCap.fill("0");
+  await expect(status).toHaveText("Showing 1–4 of 4 stocks.");
+  await search.fill("demo");
+  await sector.selectOption("Healthcare");
+  await expect(status).toHaveText("Showing 1–2 of 2 stocks.");
+  await maximumPE.fill("20");
+  await expect(page.getByRole("rowheader")).toHaveText("DEMOF");
+  await expect(search).toHaveValue("demo");
+  await expect(sector).toHaveValue("Healthcare");
+
+  await minimumPrice.fill("80");
+  await expect(alert).toContainText("Each minimum must be at most its maximum");
+  await expect(page.getByRole("table")).toHaveCount(0);
+  await minimumPrice.fill("40");
+  await expect(alert).toHaveCount(0);
+  await expect(page.getByRole("rowheader")).toHaveText("DEMOF");
+
+  await maximumPrice.fill("invalid");
+  await expect(alert).toContainText("Enter finite numbers");
+  await page.getByRole("button", { name: "Clear filters" }).click();
+  await expect(maximumPrice).toHaveValue("");
+  await expect(minimumCap).toHaveValue("");
+  await expect(maximumPE).toHaveValue("");
+  await expect(status).toHaveText("Showing 1–50 of 51 stocks.");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});

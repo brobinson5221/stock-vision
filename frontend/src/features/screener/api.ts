@@ -16,12 +16,18 @@ export interface StockPage {
   currency: "USD";
 }
 
+export type RangeMetric = "price" | "market_cap" | "pe_ratio";
+export type RangeBound = `${"min" | "max"}_${RangeMetric}`;
+
 export interface StockQuery {
   limit: number;
   offset: number;
   q: string;
   sector: string;
+  ranges: Partial<Record<RangeBound, string>>;
 }
+
+export class StockRangeError extends Error {}
 
 function isStock(value: unknown): value is Stock {
   if (!value || typeof value !== "object") return false;
@@ -43,7 +49,12 @@ export async function fetchStocks(signal: AbortSignal, query: StockQuery): Promi
   const search = query.q.trim();
   if (search) params.set("q", search);
   if (query.sector) params.set("sector", query.sector);
+  for (const [bound, value] of Object.entries(query.ranges)) {
+    const number = value.trim();
+    if (number) params.set(bound, number);
+  }
   const response = await fetch(`/api/stocks?${params}`, { signal });
+  if (response.status === 422) throw new StockRangeError("Invalid financial range.");
   if (!response.ok) throw new Error(`Stock request failed (${response.status}).`);
   const page: Partial<StockPage> | null = await response.json();
   if (

@@ -85,6 +85,14 @@ returns DEMOA with a matching total of two. Both filters ignore case and trim
 surrounding whitespace. Blank filters are ignored. Each parameter accepts up to
 100 characters. The API applies both filters before ordering and pagination.
 
+Use `min_price` / `max_price` or `min_market_cap` / `max_market_cap` for
+USD bounds, and `min_pe_ratio` / `max_pe_ratio` for P/E. For example,
+`/api/stocks?sector=Technology&max_price=75` returns DEMOD. Bounds are
+inclusive and combine with search and sector. Omit either bound for an
+open-ended range. A stock with an unavailable metric is excluded only when
+that metric has an active range. Malformed, nonfinite, or reversed bounds
+return HTTP 422, as do negative price or market cap bounds. P/E may be negative.
+
 ## Run the frontend
 
 From the repository root in terminal 2, start Vite:
@@ -103,9 +111,11 @@ Loading, empty, and retryable error states remain available. Reload cancels the
 previous request; late responses cannot replace current results.
 
 The six packaged rows fit on one page, so Previous and Next are both disabled.
-Type part of a symbol or company name, choose a sector, or combine both.
-Changing either filter returns to the first page. **Clear filters** restores
-the unfiltered list. Press Ctrl+C in each terminal to stop the services.
+Combine a symbol or company search and sector with minimum or maximum values
+for price, market cap, and P/E. Leave either bound blank to leave that side
+open. Enter USD amounts as plain numbers, such as `400000000` for $400 million.
+Changing a filter returns to the first page. **Clear filters** restores the
+unfiltered list. Press Ctrl+C in each terminal to stop the services.
 
 ## Verify the frontend
 
@@ -129,7 +139,7 @@ npm --prefix frontend run test:e2e
 
 Leave ports 8000 and 4173 free. Playwright starts and stops the sample API and
 Vite preview. The suite extends the sample to 51 rows to exercise real pagination,
-combined filters, and page reset. It also tests recovery from an HTTP 503 and
+combined filters, range validation, and page reset. It also tests recovery from an HTTP 503 and
 cancellation of a superseded search. Failed runs retain `trace.zip`
 under `dist/e2e-results/`. CI uploads available traces as `browser-failure-traces`.
 

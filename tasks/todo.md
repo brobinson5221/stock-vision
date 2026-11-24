@@ -1,8 +1,8 @@
 # Stock Vision task checklist
 
 Status: PRs #7–9 have merged, including toolkit, table, CI, and browser coverage.
-Task 9 merged in PR #10. PR #11 delivers search and sector filtering end to end
-through Tasks 10 and 10a.
+Task 9 merged in PR #10, and search and sector filtering merged in PR #11.
+The API and browser support financial ranges in PR #12. Sorting follows after merge.
 Fresh-session toolkit discovery
 remains explicitly unverified.
 
@@ -550,12 +550,14 @@ The frontend CI job installs Chromium, runs the test, and uploads failure traces
 **Description:** Implement numerical filter contracts and screening logic; Task 11a completes the same vertical slice.
 
 **Acceptance criteria:**
-- [ ] Bounds are inclusive and combine with search
-- [ ] malformed or reversed ranges return a consistent validation response
-- [ ] null metrics are excluded from active ranges.
+- [x] Bounds are inclusive and combine with search and sector.
+- [x] Malformed, nonfinite, and reversed ranges return HTTP 422.
+- [x] Null metrics are excluded from active ranges.
 
 **Verification:**
-- [ ] API boundary tests for equal/reversed/missing/nonfinite values and filtering before pagination; browser checks follow in Task 11a.
+- [x] All 64 pytest cases pass, including equal, reversed, omitted, and nonfinite
+  bounds, null metrics, and filtering before pagination. Browser checks for
+  ranges follow in Task 11a.
 
 **Dependencies:** 10a
 
@@ -571,12 +573,13 @@ The frontend CI job installs Chromium, runs the test, and uploads failure traces
 
 **Acceptance criteria:**
 
-- [ ] Controls preserve search/sector and reset offset when bounds change.
-- [ ] Validation errors are visible and null metrics obey the API contract.
+- [x] Controls preserve search and sector and reset offset when bounds change.
+- [x] Validation errors are visible and null metrics obey the API contract.
 
 **Verification:**
 
-- [ ] Frontend lint/build and combined-filter browser tests pass.
+- [x] Frontend lint, build, and all four Chromium tests pass. The range test
+  covers inclusive and invalid bounds, null metrics, and clearing at 320px.
 
 **Dependencies:** 11
 
@@ -588,8 +591,8 @@ The frontend CI job installs Chromium, runs the test, and uploads failure traces
 
 ## Checkpoint: after tasks 11-11a
 
-- [ ] API and browser tests pass for inclusive/reversed bounds and multi-page results.
-- [ ] Finish this vertical feature before starting sort controls.
+- [x] API and browser tests pass for inclusive and reversed bounds and pagination.
+- [x] Financial range filtering is complete in PR #12 before sort controls.
 
 ## Task 12: Sort screening results
 

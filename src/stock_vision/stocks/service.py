@@ -1,6 +1,16 @@
 from stock_vision.stocks.schemas import PageQuery, StockDataset, StockPage
 
 
+def _in_range(value: float | None, lower: float | None, upper: float | None) -> bool:
+    if lower is None and upper is None:
+        return True
+    return (
+        value is not None
+        and (lower is None or value >= lower)
+        and (upper is None or value <= upper)
+    )
+
+
 def browse_stocks(source: StockDataset, page: PageQuery) -> StockPage:
     """Filter and order by symbol before slicing the matching stocks."""
     search = page.q.strip().casefold()
@@ -10,6 +20,9 @@ def browse_stocks(source: StockDataset, page: PageQuery) -> StockPage:
         for stock in source.items
         if (not sector or stock.sector.casefold() == sector)
         and (search in stock.symbol.casefold() or search in stock.name.casefold())
+        and _in_range(stock.price, page.min_price, page.max_price)
+        and _in_range(stock.market_cap, page.min_market_cap, page.max_market_cap)
+        and _in_range(stock.pe_ratio, page.min_pe_ratio, page.max_pe_ratio)
     )
     ordered = sorted(matches, key=lambda stock: stock.symbol)
     return StockPage(
