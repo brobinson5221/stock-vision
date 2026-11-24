@@ -2,10 +2,9 @@
 
 Status: PRs #7–9 have merged, including toolkit, table, CI, and browser coverage.
 Task 9 merged in PR #10, and search and sector filtering merged in PR #11.
-Financial ranges merged in PR #12 and sorting merged in PR #13. The Docker
-runtime is packaged and verified locally. Task 14 adds Docker CI.
-Fresh-session toolkit discovery
-remains explicitly unverified.
+Financial ranges merged in PR #12, sorting in PR #13, and Docker packaging
+in PR #14. Docker CI and the final runbook are implemented in PR #15.
+All 25 tasks are implemented. Fresh-session toolkit discovery remains unverified.
 
 Baseline checks (from repository root): `uv run --locked ruff check .`,
 `uv run --locked ruff format --check .`, `uv run --locked pre-commit run --all-files`.
@@ -672,12 +671,16 @@ The frontend CI job installs Chromium, runs the test, and uploads failure traces
 **Description:** Build and test the final container in CI.
 
 **Acceptance criteria:**
-- [ ] CI tests the image it built
-- [ ] waits are bounded
-- [ ] container logs are retained on failure and cleanup always runs.
+- [x] CI starts and tests the image built in the same job.
+- [x] API readiness is bounded to 30 seconds, with a separate smoke test timeout.
+- [x] Failure logs are collected before container cleanup, which runs on success,
+  failure, and cancellation.
 
 **Verification:**
-- [ ] Run container job; verify health/API/static assets; inspect latest Actions.
+- [x] Replayed the workflow commands locally. Health, API, HTML, and assets
+  passed. A forced smoke failure produced logs, and both containers were removed.
+- [x] GitHub Actions passed the Docker smoke job for both push and pull request
+  events on the workflow commit. The forced failure was verified locally.
 
 **Dependencies:** 13
 
@@ -692,12 +695,15 @@ The frontend CI job installs Chromium, runs the test, and uploads failure traces
 **Description:** Document container usage and the failure-to-regression workflow.
 
 **Acceptance criteria:**
-- [ ] README covers source/container startup and troubleshooting
-- [ ] task status matches evidence
-- [ ] sample limitations are prominent.
+- [x] README covers source and container startup, troubleshooting, and regression checks.
+- [x] Task status matches local and hosted evidence.
+- [x] The sample limitations appear at the top of the README.
 
 **Verification:**
-- [ ] Follow fresh checkout runbook; all source/browser/container checks; verify required checks on latest PR revision.
+- [x] A fresh Windows clone launched both modes and showed six rows in Chromium.
+  Baseline checks, 75 pytest cases, frontend lint and build, five Chromium
+  tests, and the Docker smoke check passed.
+- Verify the latest GitHub Actions runs on PR #15 before review.
 
 **Dependencies:** 14
 
@@ -709,9 +715,9 @@ The frontend CI job installs Chromium, runs the test, and uploads failure traces
 
 ## Checkpoint: after task 15
 
-- [ ] All currently applicable tests, lint and builds pass; no checks bypassed.
-- [ ] Review diff and verify the capability introduced above manually.
-- [ ] Open/update the single scoped PR, verify latest CI, and wait for user review and merge before the next PR.
+- [x] All applicable local tests, lint, and builds passed.
+- [x] Reviewed the diff and verified source and Docker launches.
+- [ ] User review and merge after PR #15's checks pass.
 
 ## Failure-driven work during every task
 

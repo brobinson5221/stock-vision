@@ -1,15 +1,15 @@
 # Stock Vision
 
-A stock screener being built with a Python/FastAPI backend and React/TypeScript
-frontend. The first version will use explicitly labeled sample data.
+Stock Vision is a local stock screener with a FastAPI API and a React frontend.
+Search by company or symbol, filter by sector and financial ranges, and sort
+the results.
 
-Currently this repository provides an installable Python package, development
-tooling, and convention checks.
-The packaged sample source contains six fictional companies with synthetic USD
-values, explicitly labeled `synthetic-sample`; these are not market quotes.
-The sample API and paginated stock table run locally and are tested in Chromium.
-The Docker image serves both from one origin. See the
-[implementation plan](tasks/plan.md) and [task checklist](tasks/todo.md).
+**Sample data only.** The screener uses six fictional companies and synthetic
+USD values. It has no live market feed. The API labels the data
+`synthetic-sample`. All six rows fit on one page. Unavailable metrics are
+labeled in the table, and browser tests use a larger synthetic fixture to verify
+pagination. See the [implementation plan](tasks/plan.md) and
+[task checklist](tasks/todo.md).
 
 ## Run with Docker
 
@@ -18,13 +18,20 @@ repository root:
 
 ```sh
 docker build -t stock-vision:local .
-docker run --rm -p 127.0.0.1:8000:8000 stock-vision:local
+docker run --rm --name stock-vision-sample -p 127.0.0.1:8000:8000 stock-vision:local
 ```
 
 Open [the screener](http://127.0.0.1:8000/). The same process serves the API at
-`/api` and the built frontend at `/`. In a second terminal,
-`uv run --locked python scripts/smoke_container.py` checks the running image.
-Press Ctrl+C in the Docker terminal to stop it.
+`/api` and the built frontend at `/`. Open [API health](http://127.0.0.1:8000/api/health)
+to check startup. If you have uv, run the smoke check in a second terminal from
+the repository root:
+
+```sh
+uv run --locked python scripts/smoke_container.py
+```
+
+The smoke test checks health, stock data, HTML, JS/CSS, and JSON errors. Press
+Ctrl+C in the Docker terminal to stop and remove the container.
 
 ## Set up locally
 
@@ -132,14 +139,13 @@ use arrow keys to scroll horizontally; row and column headers stay visible.
 Loading, empty, and retryable error states remain available. Reload cancels the
 previous request; late responses cannot replace current results.
 
-The six packaged rows fit on one page, so Previous and Next are both disabled.
 Combine a symbol or company search and sector with minimum or maximum values
 for price, market cap, and P/E. Leave either bound blank to leave that side
 open. Enter USD amounts as plain numbers, such as `400000000` for $400 million.
 Changing a filter returns to the first page. **Clear filters** restores the
 unfiltered list. Select another column heading to sort it ascending, or select
-the active heading to reverse the order. Sorting keeps your filters and returns to the first
-page. Heading buttons also work with Enter or Space. Press Ctrl+C in each
+the active heading to reverse the order. Sorting keeps your filters and returns
+to the first page. Heading buttons also work with Enter or Space. Press Ctrl+C in each
 terminal to stop the services.
 
 ## Verify the frontend
@@ -165,8 +171,8 @@ npm --prefix frontend run test:e2e
 Leave ports 8000 and 4173 free. Playwright starts and stops the sample API and
 Vite preview. The suite extends the sample to 51 rows to exercise real pagination,
 combined filters, range validation, keyboard sorting, and page reset. It also
-tests recovery from an HTTP 503 and
-cancellation of a superseded search. Failed runs retain `trace.zip`
+tests recovery from an HTTP 503 and cancellation of a superseded search.
+Failed runs retain `trace.zip`
 under `dist/e2e-results/`. CI uploads available traces as `browser-failure-traces`.
 
 Make focused Conventional Commits with working code and its tests together.
@@ -190,15 +196,34 @@ On PRs it also validates the branch name and every commit in the PR base-to-head
 range with Commitizen. The [PR title workflow](.github/workflows/pr-title.yml)
 checks Conventional Commit titles.
 
+The [Docker smoke workflow](.github/workflows/docker.yml) builds and tests the
+runtime image on pushes and pull requests. It waits up to 30 seconds for API
+health, checks the API and frontend assets, and removes the test container.
+If the container checks fail, look for the `docker-smoke-logs` artifact on the run.
+
 To check the local commit range after fetching `origin/main`:
 
 ```sh
 uv run --locked cz check --rev-range origin/main..HEAD
 ```
 
-For an observed failure, reproduce it and add a focused regression check when
-coverage is missing. Extend existing CI where it fits; add a job only for a
-distinct unchecked boundary. Inspect the latest PR checks before review.
+## Troubleshoot and prevent regressions
+
+| Symptom | What to check |
+| --- | --- |
+| `vite` is not recognized | Run `npm --prefix frontend ci` from the repository root, then retry. If npm omits development dependencies, add `--include=dev`. |
+| The page opens but stocks fail to load | Open [API health](http://127.0.0.1:8000/api/health). For source development, keep the API running in terminal 1 while Vite runs in terminal 2. For Docker, inspect the container output. |
+| Port already in use | Stop the source API before running Docker on port 8000. To keep it running, publish Docker with `-p 127.0.0.1:8080:8000`, open port 8080, and pass `--port 8080` to the smoke script. Playwright needs ports 8000 and 4173 free. |
+| Docker fails to build or start | Use `docker info` to check the engine. Inspect the failing build step or run `docker logs stock-vision-sample` while the container exists. If it exited, use the output from the Docker terminal. |
+
+1. Save the failing command, expected result, and output. In Actions, open the
+   failing step and download any pytest report, browser trace, or Docker log
+   artifact from that run.
+2. Reproduce the failure at the smallest relevant boundary: API, browser, or
+   packaged image. Record setup or runner failures separately from code failures.
+3. Add a focused regression check where coverage is missing. Confirm it fails
+   before the fix and passes after it. Extend CI only where coverage is missing.
+4. Rerun the applicable checks and inspect Actions for the latest PR commit.
 
 ## Repository agent guidance
 

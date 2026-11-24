@@ -11,8 +11,7 @@ including standard-library unittest cases for its branch validator. A minimal
 React/TypeScript Vite frontend lives in `frontend/src/`, with a stock table and
 page controls. The Chromium browser test exercises the built frontend and real
 API routes. The [Docker image](README.md#run-with-docker) serves both on one
-origin. Follow
-`tasks/plan.md` and `tasks/todo.md`.
+origin. Follow `tasks/plan.md` and `tasks/todo.md`.
 Keep Python tests separate in `tests/`.
 Create modules only when their task introduces behavior.
 
@@ -79,13 +78,16 @@ fetch updated main before starting the next PR. Use the repository `pr` and
 
 Build the package with `uv build`. Verify wheel imports in a clean environment
 outside the checkout when changing packaging; never add source-path overrides.
+For runtime changes, build the image and run `scripts/smoke_container.py`
+against the published localhost port using the [Docker runbook](README.md#run-with-docker).
 
 The workflows check Ruff, pytest, hooks, PR branch names, all PR commit messages,
 and PR titles. Locally validate commits with
 `uv run --locked cz check --rev-range origin/main..HEAD` after fetching main.
 Use squash merging with the PR title as the commit message. Verify current
 rulesets before assuming checks are required. Add regression checks for observed
-failures; extend CI only where coverage is missing.
+failures. Follow the [failure workflow](README.md#troubleshoot-and-prevent-regressions)
+and extend CI only where coverage is missing.
 
 ## Current documentation
 
