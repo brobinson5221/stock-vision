@@ -85,6 +85,14 @@ returns DEMOA with a matching total of two. Both filters ignore case and trim
 surrounding whitespace. Blank filters are ignored. Each parameter accepts up to
 100 characters. The API applies both filters before ordering and pagination.
 
+Use `min_price` / `max_price` or `min_market_cap` / `max_market_cap` for
+USD bounds, and `min_pe_ratio` / `max_pe_ratio` for P/E. For example,
+`/api/stocks?sector=Technology&max_price=75` returns DEMOD. Bounds are
+inclusive and combine with search and sector. Omit either bound for an
+open-ended range. A stock with an unavailable metric is excluded only when
+that metric has an active range. Malformed, nonfinite, or reversed bounds
+return HTTP 422, as do negative price or market cap bounds. P/E may be negative.
+
 ## Run the frontend
 
 From the repository root in terminal 2, start Vite:

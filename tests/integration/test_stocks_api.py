@@ -107,6 +107,54 @@ def test_overlong_stock_filters_are_rejected(client, field):
     assert response.status_code == 422
 
 
+@pytest.mark.parametrize(
+    ("query", "symbols", "total"),
+    [
+        ("min_price=25&max_price=25", ["DEMOC"], 1),
+        ("min_market_cap=0", ["DEMOA", "DEMOB", "DEMOD", "DEMOE", "DEMOF"], 5),
+        ("max_pe_ratio=25", ["DEMOA", "DEMOC", "DEMOD", "DEMOE", "DEMOF"], 5),
+        ("max_pe_ratio=-1", [], 0),
+        (
+            (
+                "q=demo&sector=Technology&max_price=75&max_market_cap=1000000000"
+                "&min_pe_ratio=25&max_pe_ratio=25&limit=1"
+            ),
+            ["DEMOD"],
+            1,
+        ),
+        ("min_price=75&limit=1&offset=1", ["DEMOD"], 2),
+    ],
+)
+def test_stock_financial_ranges(query, symbols, total):
+    with TestClient(app) as client:
+        response = client.get(f"/api/stocks?{query}")
+    assert response.status_code == 200
+    data = response.json()
+    assert [stock["symbol"] for stock in data["items"]] == symbols
+    assert data["total"] == total
+
+
+@pytest.mark.parametrize(
+    "query",
+    [
+        "min_price=100&max_price=75",
+        "min_market_cap=2&max_market_cap=1",
+        "min_pe_ratio=-1&max_pe_ratio=-2",
+        "min_price=",
+        "max_price=abc",
+        "min_market_cap=-1",
+        "max_price=-1",
+        "min_price=inf",
+        "max_market_cap=1e999",
+        "min_pe_ratio=nan",
+    ],
+)
+def test_invalid_stock_ranges_return_validation_errors(client, query):
+    response = client.get(f"/api/stocks?{query}")
+    assert response.status_code == 422
+    assert response.json()["detail"]
+
+
 def test_empty_source(monkeypatch):
     monkeypatch.setitem(
         app.dependency_overrides,
