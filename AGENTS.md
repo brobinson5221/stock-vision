@@ -70,10 +70,16 @@ Use Conventional Commits for commit subjects and PR titles, such as
 `commit-message-storyteller` skill when available and base messages on the staged
 diff.
 
-Keep focused commits with working code and its tests together. Keep one PR open
-at a time at the plan's PR boundaries; leave merging to the user. After it merges,
-fetch updated main before starting the next PR. Use the repository `pr` and
-`create-pr` skills for submissions and review the scoped diff with `ponytail-review`.
+Every implementation plan must identify commit checkpoints and PR boundaries.
+Commit each independently verifiable slice when it passes its checks. Keep a
+fix and its regression test together, and give independent tests, tooling,
+and documentation their own commits when they stand alone.
+
+Keep one PR open at a time. Use the repository `pr` skill to write the PR body
+and `create-pr` to publish the branch, open the PR, and verify CI on the latest
+commit. Review the scoped diff with `ponytail-review`. Leave merging to the
+user. After the PR merges, fetch `origin/main` and start the next branch from
+that updated base. Avoid stacked PRs.
 
 Build the package with `uv build`. Verify wheel imports in a clean environment
 outside the checkout when changing packaging; never add source-path overrides.
