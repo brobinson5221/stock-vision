@@ -15,7 +15,7 @@ installed backend wheel and serves the frontend and API from the same origin.
 A fresh Windows checkout passed the source and Docker launch steps, 75 pytest
 cases, frontend lint and build, five Chromium tests, and the container smoke
 test. GitHub Actions checks source, browser, and Docker behavior and retains
-failure artifacts. PR #15 contains the Docker workflow and the final runbook.
+failure artifacts. PR #15 merged the Docker workflow and final runbook.
 The local toolkit merged in PR #7. Fresh-session automatic skill discovery
 remains unverified.
 
@@ -74,9 +74,9 @@ frontend/
     App.tsx                    # page composition only
     features/screener/
       api.ts                   # typed stock requests and API error handling
-      Screener.tsx             # query state and request lifecycle
-      StockTable.tsx           # accessible rows and pagination controls
-      Filters.tsx              # search, sector and numerical controls when added
+      Screener.tsx             # query state, requests, search, sector, pagination
+      StockTable.tsx           # accessible rows and sortable column headers
+      RangeFilters.tsx         # numerical filter controls
     styles.css
   tests/                       # browser flows
 scripts/                       # development and CI utilities, not application code

@@ -717,7 +717,7 @@ The frontend CI job installs Chromium, runs the test, and uploads failure traces
 
 - [x] All applicable local tests, lint, and builds passed.
 - [x] Reviewed the diff and verified source and Docker launches.
-- [ ] User review and merge after PR #15's checks pass.
+- [x] [PR #15](https://github.com/brobinson5221/stock-vision/pull/15) passed its checks and merged.
 
 ## Failure-driven work during every task
 
