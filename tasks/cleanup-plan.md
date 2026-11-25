@@ -10,10 +10,19 @@ Run the current checks to establish a baseline. Then simplify the text-filter
 update and derive the announced result range once, with browser coverage for
 both empty states in place before changing the range calculation. Verify the
 combined flow in Chromium and smoke-test the packaged app. Clarify the README's
-default sorting and pagination description before review.
+default sorting and pagination description before review. Switch Starlette's
+test client to `httpx2` and remove duplicate CI and contributor commands while
+keeping the existing check jobs and local hooks.
 
 The [cleanup checklist](cleanup-todo.md) records dependencies and verification.
 The [sample delivery checklist](todo.md) continues to track its own PR gate.
+
+## Follow-up findings
+
+- The Graphify helper and intermediate files are absent from this checkout and
+  from tracked `main`. Handle any scratch files in the checkout that owns them.
+- A live data provider is separate feature work. The backend and frontend
+  enforce synthetic provenance, and the UI uses the sample's sector list.
 
 ## Risks
 

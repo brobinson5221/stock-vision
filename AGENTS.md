@@ -50,7 +50,6 @@ Follow the Ruff configuration in `pyproject.toml`. Before submitting changes:
 ```sh
 uv run --locked ruff check .
 uv run --locked ruff format --check .
-uv run --locked python -m unittest discover -s tests -v
 uv run --locked pytest tests
 uv run --locked pre-commit run --all-files
 ```
@@ -81,7 +80,7 @@ outside the checkout when changing packaging; never add source-path overrides.
 For runtime changes, build the image and run `scripts/smoke_container.py`
 against the published localhost port using the [Docker runbook](README.md#run-with-docker).
 
-The workflows check Ruff, pytest, hooks, PR branch names, all PR commit messages,
+The workflows check Ruff, pytest, PR branch names, all PR commit messages,
 and PR titles. Locally validate commits with
 `uv run --locked cz check --rev-range origin/main..HEAD` after fetching main.
 Use squash merging with the PR title as the commit message. Verify current
