@@ -52,6 +52,7 @@ test("combines search and sector filters and resets to the first page", async ({
   await expect(status).toHaveText("Showing 1–1 of 1 stock.");
   await search.fill("Alpha");
   await expect(page.getByText("No stocks found.")).toBeVisible();
+  await expect(status).toHaveText("Showing 0–0 of 0 stocks.");
   await expect(next).toBeDisabled();
 
   await page.getByRole("button", { name: "Clear filters" }).press("Enter");
@@ -61,6 +62,27 @@ test("combines search and sector filters and resets to the first page", async ({
   await expect(next).toBeEnabled();
   const pageOverflows = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
   expect(pageOverflows).toBe(false);
+});
+
+test("returns to the previous page when results shrink", async ({ page }) => {
+  await page.goto("/");
+  const status = page.getByRole("status");
+  const previous = page.getByRole("button", { name: "Previous" });
+  const next = page.getByRole("button", { name: "Next" });
+
+  await expect(status).toHaveText("Showing 1–50 of 51 stocks.");
+  await page.route(/\/api\/stocks\?.*\boffset=50\b/, (route) => route.fulfill({
+    json: { items: [], total: 50, limit: 50, offset: 50, provenance: "synthetic-sample", currency: "USD" },
+  }));
+  await next.click();
+  await expect(status).toHaveText("Showing 0–0 of 50 stocks.");
+  await expect(page.getByText("No stocks on this page. Use Previous to return.")).toBeVisible();
+  await expect(next).toBeDisabled();
+  await expect(previous).toBeEnabled();
+
+  await previous.click();
+  await expect(status).toHaveText("Showing 1–50 of 51 stocks.");
+  await expect(previous).toBeDisabled();
 });
 
 test("cancels a pending search when a newer search returns", async ({ page }) => {

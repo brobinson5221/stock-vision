@@ -20,14 +20,17 @@ export default function Screener() {
   const [state, setState] = useState<State>({ status: "loading" });
   const { offset, limit, q, sector } = query;
   const displayedPage = state.status === "ready" || state.status === "loading" ? state.page : undefined;
+  const resultRange = displayedPage?.items.length
+    ? `${displayedPage.offset + 1}–${displayedPage.offset + displayedPage.items.length}`
+    : "0–0";
 
   function changeQuery(next: StockQuery, page?: StockPage) {
     setState({ status: "loading", page });
     setQuery(next);
   }
 
-  function changeFilters(q: string, sector: string) {
-    changeQuery({ ...query, offset: 0, q, sector });
+  function changeTextFilter(filter: "q" | "sector", value: string) {
+    changeQuery({ ...query, offset: 0, [filter]: value });
   }
 
   useEffect(() => {
@@ -52,12 +55,12 @@ export default function Screener() {
         <div>
           <label htmlFor="stock-search">Symbol or company</label>
           <input id="stock-search" type="search" maxLength={100} value={q}
-            onChange={(event) => changeFilters(event.target.value, sector)} />
+            onChange={(event) => changeTextFilter("q", event.target.value)} />
         </div>
         <div>
           <label htmlFor="stock-sector">Sector</label>
           <select id="stock-sector" value={sector}
-            onChange={(event) => changeFilters(q, event.target.value)}>
+            onChange={(event) => changeTextFilter("sector", event.target.value)}>
             <option value="">All sectors</option>
             {sectors.map((option) => <option key={option}>{option}</option>)}
           </select>
@@ -82,7 +85,7 @@ export default function Screener() {
       )}
       {state.status === "ready" && <>
           <p role="status">
-            Showing {state.page.items.length ? state.page.offset + 1 : 0}–{state.page.items.length ? state.page.offset + state.page.items.length : 0} of {state.page.total} {state.page.total === 1 ? "stock" : "stocks"}.
+            Showing {resultRange} of {state.page.total} {state.page.total === 1 ? "stock" : "stocks"}.
           </p>
           {state.page.items.length === 0 && (
             <p>{state.page.total === 0 ? "No stocks found." : "No stocks on this page. Use Previous to return."}</p>
