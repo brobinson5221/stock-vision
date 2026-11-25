@@ -157,8 +157,10 @@ npm --prefix frontend run lint
 npm --prefix frontend run build
 ```
 
-The build runs strict TypeScript checking and writes static assets to
-`frontend/dist/`.
+ESLint checks TypeScript and TSX, including the frontend's tool configuration
+and browser tests. The lint parser uses the TypeScript 6 API alongside the
+TypeScript 7 compiler. The build runs strict TypeScript checking and writes
+static assets to `frontend/dist/`.
 
 Stop the development servers before running the browser test. On Linux, add
 `--with-deps` to the install command if Chromium's system libraries are missing.
