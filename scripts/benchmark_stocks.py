@@ -146,34 +146,34 @@ def peak_memory(pid: int) -> int | None:
     return None
 
 
+def wait_for_server(server: subprocess.Popen, port: int) -> None:
+    health = HTTPConnection("127.0.0.1", port, timeout=1)
+    try:
+        for _ in range(100):
+            try:
+                if request(health, "/api/health")[0] == HTTPStatus.OK:
+                    return
+            except OSError:
+                health.close()
+            if server.poll() is not None:
+                msg = "Benchmark server exited during startup"
+                raise RuntimeError(msg)
+            time.sleep(0.1)
+        msg = "Benchmark server did not become ready"
+        raise RuntimeError(msg)
+    finally:
+        health.close()
+
+
 def run_group(path: Path, rows: list[dict], mode: str, args: argparse.Namespace) -> bool:
     with socket.socket() as listener:
         listener.bind(("127.0.0.1", 0))
         port = listener.getsockname()[1]
     command = [sys.executable, __file__, "--serve", str(path), mode, str(port)]
+    failed = False
     with subprocess.Popen(command) as server:
-        health = HTTPConnection("127.0.0.1", port, timeout=1)
         try:
-            for _ in range(100):
-                try:
-                    if request(health, "/api/health")[0] == HTTPStatus.OK:
-                        break
-                except OSError:
-                    health.close()
-                if server.poll() is not None:
-                    msg = "Benchmark server exited during startup"
-                    raise RuntimeError(msg)
-                time.sleep(0.1)
-            else:
-                msg = "Benchmark server did not become ready"
-                raise RuntimeError(msg)
-        finally:
-            health.close()
-            if sys.exc_info()[0] is not None:
-                server.terminate()
-
-        failed = False
-        try:
+            wait_for_server(server, port)
             for name, query in WORKLOADS.items():
                 endpoint = f"/api/stocks{query}"
                 connection = HTTPConnection("127.0.0.1", port, timeout=15)
@@ -208,6 +208,10 @@ def run_group(path: Path, rows: list[dict], mode: str, args: argparse.Namespace)
                         ),
                         flush=True,
                     )
+                    if failed:
+                        break
+                if failed:
+                    break
             if not args.smoke:
                 pid = int(path.with_suffix(".pid").read_text(encoding="utf-8"))
                 print(

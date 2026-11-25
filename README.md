@@ -191,6 +191,8 @@ reviewable within the PR. Follow the boundaries in the task checklist.
 From the repository root, run the synthetic benchmark with one local API worker.
 The smoke run checks response correctness. The full run prints JSON lines with
 latency, throughput, errors, and server peak memory on Windows and Linux.
+If a workload reports errors, the runner skips the rest of that dataset and
+source combination, continues with the other groups, and exits nonzero.
 
 ```sh
 uv run --locked python scripts/benchmark_stocks.py --smoke
