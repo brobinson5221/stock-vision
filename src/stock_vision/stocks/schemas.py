@@ -12,6 +12,7 @@ from pydantic import (
 )
 
 SourceText = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
+MAX_SECTOR_LENGTH = 100
 
 
 class Stock(BaseModel):
@@ -27,7 +28,7 @@ class Stock(BaseModel):
 
     symbol: str = Field(min_length=1, pattern=r"^[A-Z][A-Z0-9.-]*$")
     name: str = Field(min_length=1)
-    sector: str = Field(min_length=1)
+    sector: str = Field(min_length=1, max_length=MAX_SECTOR_LENGTH)
     price: float = Field(gt=0, description="USD per share")
     market_cap: float | None = Field(ge=0, description="USD; null when unavailable")
     pe_ratio: float | None = Field(description="Price/earnings ratio; null when unavailable")
@@ -37,7 +38,7 @@ class PageQuery(BaseModel):
     limit: int = Field(default=50, gt=0, le=100)
     offset: int = Field(default=0, ge=0)
     q: str = Field(default="", max_length=100, description="Substring of symbol or company name")
-    sector: str = Field(default="", max_length=100, description="Exact sector name")
+    sector: str = Field(default="", max_length=MAX_SECTOR_LENGTH, description="Exact sector name")
     min_price: FiniteFloat | None = Field(default=None, ge=0)
     max_price: FiniteFloat | None = Field(default=None, ge=0)
     min_market_cap: FiniteFloat | None = Field(default=None, ge=0)

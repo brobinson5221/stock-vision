@@ -3,7 +3,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from stock_vision.main import app, create_app
-from stock_vision.stocks.schemas import StockDataset
+from stock_vision.stocks.schemas import Stock, StockDataset
 from stock_vision.stocks.source import load_sample_stocks
 
 
@@ -120,6 +120,22 @@ def test_stock_search_and_sector_filters(params, symbols):
     data = response.json()
     assert [stock["symbol"] for stock in data["items"]] == symbols
     assert data["total"] == len(symbols)
+
+
+def test_stock_sector_can_be_filtered_at_length_limit(monkeypatch):
+    sector = "S" * 100
+    sample = load_sample_stocks().items[0]
+    stock = Stock.model_validate(sample.model_dump() | {"sector": sector})
+    dataset = StockDataset(items=(stock,))
+    monkeypatch.setitem(app.dependency_overrides, load_sample_stocks, lambda: dataset)
+
+    with TestClient(app) as client:
+        response = client.get("/api/stocks", params={"sector": sector.lower()})
+
+    assert response.status_code == 200
+    page = response.json()
+    assert page["sectors"] == [sector]
+    assert [item["symbol"] for item in page["items"]] == [stock.symbol]
 
 
 @pytest.mark.parametrize("field", ["q", "sector"])
