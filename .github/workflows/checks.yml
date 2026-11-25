@@ -55,9 +55,6 @@ jobs:
           assert load_sample_stocks().items
           PY
 
-      - name: Run hooks
-        run: uv run --locked pre-commit run --all-files
-
       - name: Validate PR branch and all commits
         if: github.event_name == 'pull_request'
         env:

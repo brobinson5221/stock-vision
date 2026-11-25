@@ -62,14 +62,12 @@ Run checks from the repository root:
 ```sh
 uv run --locked ruff check .
 uv run --locked ruff format --check .
-uv run --locked python -m unittest discover -s tests -v
 uv run --locked pytest tests
 uv run --locked pre-commit run --all-files
 uv run --locked python scripts/check_branch.py codex/feat/sample-screener
 ```
 
-Tests cover branch validation, package imports, sample data, and schema bounds. The existing
-branch tests also run with `uv run --locked python -m unittest discover -s tests -v`.
+Tests cover branch validation, package imports, sample data, and schema bounds.
 Format with `uv run ruff format .`.
 Hooks can change files; review and stage those edits before retrying a commit.
 
@@ -79,7 +77,7 @@ development tools. Commit `pyproject.toml` and `uv.lock` together when they chan
 The package lives in `src/stock_vision/` and installs during locked sync. Verify
 it with `uv run --locked python -c "import stock_vision"`. Build a source archive
 and wheel with `uv build`; outputs go to the ignored `dist/` directory. FastAPI
-and Uvicorn are runtime dependencies; pytest and httpx are development tools.
+and Uvicorn are runtime dependencies. pytest and httpx2 support API testing.
 
 `stock_vision.stocks.source.load_sample_stocks()` loads validated, immutable
 records from package resources, independent of the working directory. Price is
@@ -98,8 +96,9 @@ uv run --locked uvicorn stock_vision.main:app --reload
 Open [the API explorer](http://127.0.0.1:8000/docs) to try requests.
 `GET /api/health` returns `{"status":"ok"}`. `GET /api/stocks?limit=2&offset=0`
 returns `items`, `total`, `limit`, `offset`, `provenance`, and `currency`.
-Results are ordered by symbol before pagination; out-of-range pages are empty
-with the total preserved. Invalid page bounds return HTTP 422.
+The default sort is symbol ascending. The API applies the selected sort before
+pagination. Out-of-range pages are empty with the total preserved. Invalid page
+bounds return HTTP 422.
 
 Add `q` to search for part of a symbol or company name and `sector` to match a
 full sector name. For example, `/api/stocks?q=demo&sector=Technology&limit=1`
@@ -173,7 +172,8 @@ npm --prefix frontend run test:e2e
 Leave ports 8000 and 4173 free. Playwright starts and stops the sample API and
 Vite preview. The suite extends the sample to 51 rows to exercise real pagination,
 combined filters, range validation, keyboard sorting, and page reset. It also
-tests recovery from an HTTP 503 and cancellation of a superseded search.
+tests recovery from an HTTP 503 and from a page that becomes out of range,
+plus cancellation of a superseded search.
 Failed runs retain `trace.zip`
 under `dist/e2e-results/`. CI uploads available traces as `browser-failure-traces`.
 
@@ -189,7 +189,7 @@ reviewable within the PR. Follow the boundaries in the task checklist.
 ## GitHub verification
 
 The [Checks workflow](.github/workflows/checks.yml) runs locked installation,
-Ruff, pytest, and existing pre-commit hooks on pushes and PRs. It also builds and
+Ruff and pytest on pushes and PRs. It also builds and
 installs a wheel outside the checkout to verify the API import and packaged sample
 data. The frontend job uses Node.js 24 and `npm ci` before linting, checking types,
 building, and running the Chromium browser test. Download the `pytest-results`
