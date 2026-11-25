@@ -96,3 +96,28 @@ per client, and p95 for a cell with many timeouts reflects only its successful
 responses. Set a deployment-specific latency and traffic target and rerun
 with a larger sample before setting a performance gate. CI runs the
 deterministic correctness smoke check without a timing threshold.
+
+## Packaged loader follow-up
+
+A follow-up run used the production `load_sample_stocks` callable with its
+resource lookup redirected to the generated 10,000-row `sample_stocks.json`.
+The disk-backed comparison in the same run still read and validated the same
+file on every request. We used the same three workloads, seed, and worker count
+with `--sizes 10000 --clients 1 8 32 --requests 32 --warmup 4`.
+Validation and warmup preceded timing, so the snapshot's first load is excluded.
+
+| Workload | Clients | Disk-backed p95 | Production snapshot p95 |
+| --- | ---: | ---: | ---: |
+| Default | 1 | 39.56 ms | 6.65 ms |
+| Default | 8 | 332.42 ms | 49.83 ms |
+| Default | 32 | 1,149.59 ms | 176.52 ms |
+| Filtered | 1 | 31.65 ms | 3.82 ms |
+| Filtered | 8 | 286.20 ms | 25.58 ms |
+| Filtered | 32 | 1,129.71 ms | 88.52 ms |
+| Sorted | 1 | 58.04 ms | 33.64 ms |
+| Sorted | 8 | 489.40 ms | 82.59 ms |
+| Sorted | 32 | 1,551.65 ms | 297.35 ms |
+
+There were no request errors. Server peak working set was 214.3 MiB for
+disk-backed reads and 75.9 MiB for the snapshot. Absolute timings varied from
+the earlier runs, so the table compares only measurements from this paired run.
