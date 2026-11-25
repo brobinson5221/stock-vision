@@ -186,13 +186,28 @@ to merge it before branching from updated `main` for the next PR. Use squash
 merging with the Conventional Commit PR title; development commits remain
 reviewable within the PR. Follow the boundaries in the task checklist.
 
+## Benchmark the stock endpoint
+
+From the repository root, run the synthetic benchmark with one local API worker.
+The smoke run checks response correctness. The full run prints JSON lines with
+latency, throughput, errors, and server peak memory on Windows and Linux.
+
+```sh
+uv run --locked python scripts/benchmark_stocks.py --smoke
+uv run --locked python scripts/benchmark_stocks.py
+```
+
+Use `--sizes`, `--clients`, `--requests`, and `--warmup` to narrow a run. See the
+[benchmark plan](tasks/benchmark-plan.md) for the workload and interpretation.
+
 ## GitHub verification
 
 The [Checks workflow](.github/workflows/checks.yml) runs locked installation,
-Ruff and pytest on pushes and PRs. It also builds and
-installs a wheel outside the checkout to verify the API import and packaged sample
-data. The frontend job uses Node.js 24 and `npm ci` before linting, checking types,
-building, and running the Chromium browser test. Download the `pytest-results`
+Ruff, pytest, and a stock benchmark correctness smoke check on pushes and PRs.
+It also builds and installs a wheel outside the checkout to verify the API
+import and packaged sample data. The frontend job uses Node.js 24 and `npm ci`
+before linting, checking types, building, and running the Chromium browser
+test. Download the `pytest-results`
 artifact from the workflow run for the JUnit report, including when tests fail.
 On PRs it also validates the branch name and every commit in the PR base-to-head
 range with Commitizen. The [PR title workflow](.github/workflows/pr-title.yml)
