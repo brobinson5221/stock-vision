@@ -84,9 +84,18 @@ The workflows check Ruff, pytest, PR branch names, all PR commit messages,
 and PR titles. Locally validate commits with
 `uv run --locked cz check --rev-range origin/main..HEAD` after fetching main.
 Use squash merging with the PR title as the commit message. Verify current
-rulesets before assuming checks are required. Add regression checks for observed
-failures. Follow the [failure workflow](README.md#troubleshoot-and-prevent-regressions)
-and extend CI only where coverage is missing.
+rulesets before assuming checks are required.
+
+For each reproducible failure or behavior that needs verification, identify the
+expected result and check whether the existing suite enforces it. If coverage
+is missing, add the smallest repeatable test or check at the relevant boundary.
+For a regression, confirm the check fails before the fix and passes afterward.
+For new behavior, verify that the check detects a representative bad result.
+Run repeatable checks through the existing CI job when possible. Add a GitHub
+Actions step or job when a recurring check needs a distinct command or
+environment. Keep noisy performance measurements advisory until a stable
+baseline and target exist. Record any verification blocker and follow the
+[failure workflow](README.md#troubleshoot-and-prevent-regressions).
 
 ## Current documentation
 
