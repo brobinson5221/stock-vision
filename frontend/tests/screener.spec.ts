@@ -1,5 +1,21 @@
 import { expect, test } from "@playwright/test";
 
+test("restores sector filtering after the first stock request fails", async ({ page }) => {
+  await page.route(/\/api\/stocks\?/, (route) => route.fulfill({ status: 503 }), { times: 1 });
+  await page.goto("/");
+
+  const sector = page.getByRole("combobox", { name: "Sector" });
+  await expect(page.getByRole("alert")).toHaveText("Unable to load stocks. Please try reloading.");
+  await expect(sector).toBeDisabled();
+
+  await page.getByRole("button", { name: "Reload stocks" }).click();
+  await expect(page.getByRole("alert")).toHaveCount(0);
+  await expect(page.getByText("Data source: Offline synthetic test universe.")).toBeVisible();
+  await expect(sector).toBeEnabled();
+  await sector.selectOption("Utilities");
+  await expect(page.getByRole("rowheader")).toHaveText("TEST45");
+});
+
 test("browses real API pages and recovers from a failed reload", async ({ page }) => {
   await page.goto("/");
 

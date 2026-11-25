@@ -55,6 +55,7 @@ def test_nullable_metrics_and_units():
         {"name": ""},
         {"name": "   "},
         {"sector": ""},
+        {"sector": "S" * 101},
         {"price": -1},
         {"price": True},
         {"price": float("inf")},
