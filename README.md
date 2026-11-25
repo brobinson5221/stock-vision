@@ -80,7 +80,8 @@ and wheel with `uv build`; outputs go to the ignored `dist/` directory. FastAPI
 and Uvicorn are runtime dependencies. pytest and httpx2 support API testing.
 
 `stock_vision.stocks.source.load_sample_stocks()` loads validated, immutable
-records from package resources, independent of the working directory. Price is
+records from package resources, independent of the working directory. The
+first successful load is reused until the server process restarts. Price is
 USD per share and market capitalization is USD; unavailable market cap and P/E
 remain `None`. Pagination inputs default to limit 50 and offset 0, with limit
 1–100 and nonnegative offset.
