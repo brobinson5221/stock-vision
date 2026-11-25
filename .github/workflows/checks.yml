@@ -39,6 +39,9 @@ jobs:
           name: pytest-results
           path: dist/pytest-results.xml
 
+      - name: Smoke test the stock benchmark
+        run: uv run --locked python scripts/benchmark_stocks.py --smoke
+
       - name: Build wheel
         run: uv build --wheel --out-dir "$RUNNER_TEMP/stock-vision-wheel"
 
