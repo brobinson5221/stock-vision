@@ -96,7 +96,10 @@ uv run --locked uvicorn stock_vision.main:app --reload
 
 Open [the API explorer](http://127.0.0.1:8000/docs) to try requests.
 `GET /api/health` returns `{"status":"ok"}`. `GET /api/stocks?limit=2&offset=0`
-returns `items`, `total`, `limit`, `offset`, `provenance`, and `currency`.
+returns `items`, `total`, `limit`, `offset`, `provenance`, `source_name`,
+`as_of`, `sectors`, and `currency`. `source_name` is an optional display label.
+`as_of` is a timezone-aware timestamp or `null` when the source supplies none.
+`sectors` lists sectors from the full dataset, independent of filters and pages.
 The default sort is symbol ascending. The API applies the selected sort before
 pagination. Out-of-range pages are empty with the total preserved. Invalid page
 bounds return HTTP 422.
@@ -131,8 +134,9 @@ npm --prefix frontend run dev -- --host 127.0.0.1 --port 5173 --strictPort
 ```
 
 Open [the screener](http://127.0.0.1:5173/). Vite forwards `/api` requests to
-`127.0.0.1:8000`. The table labels the data as synthetic, displays prices and
-market capitalization in USD, and marks unavailable metrics. Previous/Next
+`127.0.0.1:8000`. The screener displays the source and snapshot time when
+available. The packaged source is labeled synthetic sample data. The table
+displays prices and market capitalization in USD and marks unavailable metrics. Previous/Next
 controls browse 50-row pages, preserve the API query, announce result ranges,
 and disable invalid navigation. On narrow screens, focus the table region and
 use arrow keys to scroll horizontally; row and column headers stay visible.

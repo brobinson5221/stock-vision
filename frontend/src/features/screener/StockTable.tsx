@@ -21,7 +21,7 @@ export default function StockTable({ stocks, sort, busy, onSort }: {
   return (
     <div className="table-scroll" tabIndex={0} role="region" aria-labelledby="stock-table-caption">
       <table aria-busy={busy}>
-        <caption id="stock-table-caption">Synthetic sample stocks · Amounts in USD</caption>
+        <caption id="stock-table-caption">Stock results · Amounts in USD</caption>
         <thead>
           <tr>
             {columns.map(({ key, label, numeric }) => (

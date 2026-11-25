@@ -12,7 +12,10 @@ export interface StockPage {
   total: number;
   limit: number;
   offset: number;
-  provenance: "synthetic-sample";
+  provenance: string;
+  source_name: string | null;
+  as_of: string | null;
+  sectors: string[];
   currency: "USD";
 }
 
@@ -72,7 +75,10 @@ export async function fetchStocks(signal: AbortSignal, query: StockQuery): Promi
     page.limit < 1 || page.limit > 100 ||
     typeof page.offset !== "number" || !Number.isSafeInteger(page.offset) || page.offset < 0 ||
     page.items.length > page.limit || page.items.length > page.total ||
-    page.provenance !== "synthetic-sample" || page.currency !== "USD" ||
+    typeof page.provenance !== "string" || !page.provenance.trim() || page.currency !== "USD" ||
+    (page.source_name !== null && (typeof page.source_name !== "string" || !page.source_name.trim())) ||
+    (page.as_of !== null && (typeof page.as_of !== "string" || !Number.isFinite(Date.parse(page.as_of)))) ||
+    !Array.isArray(page.sectors) || !page.sectors.every((sector) => typeof sector === "string" && sector.trim()) ||
     page.offset !== query.offset || page.limit !== query.limit
   ) throw new Error("Invalid stock response.");
   return page as StockPage;
