@@ -42,5 +42,8 @@ def browse_stocks(source: StockDataset, page: PageQuery) -> StockPage:
         limit=page.limit,
         offset=page.offset,
         provenance=source.provenance,
+        source_name=source.source_name,
+        as_of=source.as_of,
+        sectors=source.sector_options,
         currency=source.currency,
     )

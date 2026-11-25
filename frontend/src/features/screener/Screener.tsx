@@ -9,8 +9,7 @@ type State =
   | { status: "invalid-range" }
   | { status: "ready"; page: StockPage };
 
-// shortcut: sectors match the packaged sample, use API-provided options when the data source changes.
-const sectors = ["Energy", "Healthcare", "Industrials", "Technology"];
+const snapshotTime = new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeStyle: "short", timeZone: "UTC" });
 
 export default function Screener() {
   const [attempt, setAttempt] = useState(0);
@@ -18,6 +17,7 @@ export default function Screener() {
     limit: 50, offset: 0, q: "", sector: "", ranges: {}, sortBy: "symbol", sortDir: "asc",
   });
   const [state, setState] = useState<State>({ status: "loading" });
+  const [metadata, setMetadata] = useState<Pick<StockPage, "provenance" | "source_name" | "as_of" | "sectors">>();
   const { offset, limit, q, sector } = query;
   const displayedPage = state.status === "ready" || state.status === "loading" ? state.page : undefined;
   const resultRange = displayedPage?.items.length
@@ -37,7 +37,11 @@ export default function Screener() {
     const controller = new AbortController();
     fetchStocks(controller.signal, query).then(
       (page) => {
-        if (!controller.signal.aborted) setState({ status: "ready", page });
+        if (!controller.signal.aborted) {
+          const { provenance, source_name, as_of, sectors } = page;
+          setMetadata({ provenance, source_name, as_of, sectors });
+          setState({ status: "ready", page });
+        }
       },
       (error: unknown) => {
         if (!controller.signal.aborted) {
@@ -51,6 +55,14 @@ export default function Screener() {
   return (
     <section aria-labelledby="stocks-heading">
       <h2 id="stocks-heading">Stocks</h2>
+      {metadata && (
+        <p>
+          Data source: {metadata.source_name ?? metadata.provenance}.{" "}
+          {metadata.as_of === null ? "Snapshot time unavailable." : (
+            <>As of <time dateTime={metadata.as_of}>{snapshotTime.format(new Date(metadata.as_of))} UTC</time>.</>
+          )}
+        </p>
+      )}
       <div className="stock-filters">
         <div>
           <label htmlFor="stock-search">Symbol or company</label>
@@ -59,10 +71,11 @@ export default function Screener() {
         </div>
         <div>
           <label htmlFor="stock-sector">Sector</label>
-          <select id="stock-sector" value={sector}
+          <select id="stock-sector" value={sector} disabled={!metadata}
             onChange={(event) => changeTextFilter("sector", event.target.value)}>
             <option value="">All sectors</option>
-            {sectors.map((option) => <option key={option}>{option}</option>)}
+            {sector && !metadata?.sectors.includes(sector) && <option>{sector}</option>}
+            {metadata?.sectors.map((option) => <option key={option}>{option}</option>)}
           </select>
         </div>
         <button type="button" onClick={() => changeQuery({ ...query, offset: 0, q: "", sector: "", ranges: {} })}>

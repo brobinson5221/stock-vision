@@ -189,6 +189,9 @@ def run_group(path: Path, rows: list[dict], mode: str, args: argparse.Namespace)
                     "offset": offset,
                     "limit": 50,
                     "provenance": "synthetic-sample",
+                    "source_name": None,
+                    "as_of": None,
+                    "sectors": sorted({row["sector"] for row in rows}),
                     "currency": "USD",
                 }
                 for clients in args.clients:

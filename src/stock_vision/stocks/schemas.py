@@ -1,6 +1,17 @@
-from typing import Literal, Self
+from functools import cached_property
+from typing import Annotated, Literal, Self
 
-from pydantic import BaseModel, ConfigDict, Field, FiniteFloat, model_validator
+from pydantic import (
+    AwareDatetime,
+    BaseModel,
+    ConfigDict,
+    Field,
+    FiniteFloat,
+    StringConstraints,
+    model_validator,
+)
+
+SourceText = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
 
 
 class Stock(BaseModel):
@@ -52,12 +63,21 @@ class PageQuery(BaseModel):
 class StockDataset(BaseModel):
     model_config = ConfigDict(frozen=True, extra="forbid")
 
-    provenance: Literal["synthetic-sample"] = "synthetic-sample"
+    provenance: SourceText = "synthetic-sample"
+    source_name: SourceText | None = None
+    as_of: AwareDatetime | None = None
     currency: Literal["USD"] = "USD"
     items: tuple[Stock, ...]
 
+    @cached_property
+    def sector_options(self) -> tuple[str, ...]:
+        names = {stock.sector for stock in self.items}
+        by_case = {name.casefold(): name for name in sorted(names)}
+        return tuple(by_case[key] for key in sorted(by_case))
+
 
 class StockPage(StockDataset):
+    sectors: tuple[str, ...]
     total: int = Field(ge=0)
     limit: int = Field(gt=0, le=100)
     offset: int = Field(ge=0)

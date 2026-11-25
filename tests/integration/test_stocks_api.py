@@ -50,6 +50,9 @@ def test_health_and_default_sample():
     assert response.status_code == 200
     data = response.json()
     assert data["provenance"] == "synthetic-sample"
+    assert data["source_name"] == "Synthetic sample data"
+    assert data["as_of"] is None
+    assert data["sectors"] == ["Energy", "Healthcare", "Industrials", "Technology"]
     assert data["currency"] == "USD"
     assert data["limit"] == 50
     assert data["offset"] == 0

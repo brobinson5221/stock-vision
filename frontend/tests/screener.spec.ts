@@ -12,6 +12,9 @@ test("browses real API pages and recovers from a failed reload", async ({ page }
   await expect(table.getByRole("rowheader", { name: "DEMOA" })).toBeVisible();
   await expect(status).toHaveText("Showing 1–50 of 51 stocks.");
   await expect(previous).toBeDisabled();
+  await expect(page.getByText("Data source: Offline synthetic test universe.")).toBeVisible();
+  await expect(page.locator("time")).toHaveAttribute("datetime", "2026-11-24T15:00:00Z");
+  await expect(page.getByRole("option", { name: "Utilities" })).toHaveCount(1);
 
   await next.click();
   await expect(status).toHaveText("Showing 51–51 of 51 stocks.");
@@ -29,6 +32,10 @@ test("browses real API pages and recovers from a failed reload", async ({ page }
   await previous.click();
   await expect(status).toHaveText("Showing 1–50 of 51 stocks.");
   await expect(table.getByRole("rowheader", { name: "DEMOA" })).toBeVisible();
+  await page.getByRole("combobox", { name: "Sector" }).selectOption("Utilities");
+  await expect(table.getByRole("rowheader")).toHaveText("TEST45");
+  await expect(status).toHaveText("Showing 1–1 of 1 stock.");
+  await expect(page.getByRole("option", { name: "Technology" })).toHaveCount(1);
 });
 
 test("combines search and sector filters and resets to the first page", async ({ page }) => {
@@ -71,9 +78,10 @@ test("returns to the previous page when results shrink", async ({ page }) => {
   const next = page.getByRole("button", { name: "Next" });
 
   await expect(status).toHaveText("Showing 1–50 of 51 stocks.");
-  await page.route(/\/api\/stocks\?.*\boffset=50\b/, (route) => route.fulfill({
-    json: { items: [], total: 50, limit: 50, offset: 50, provenance: "synthetic-sample", currency: "USD" },
-  }));
+  await page.route(/\/api\/stocks\?.*\boffset=50\b/, async (route) => {
+    const response = await route.fetch();
+    await route.fulfill({ response, json: { ...await response.json(), items: [], total: 50 } });
+  });
   await next.click();
   await expect(status).toHaveText("Showing 0–0 of 50 stocks.");
   await expect(page.getByText("No stocks on this page. Use Previous to return.")).toBeVisible();

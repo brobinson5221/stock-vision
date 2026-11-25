@@ -1,5 +1,6 @@
 {
   "provenance": "synthetic-sample",
+  "source_name": "Synthetic sample data",
   "currency": "USD",
   "items": [
     {"symbol": "DEMOA", "name": "Demo Alpha", "sector": "Technology", "price": 100, "market_cap": 1000000000, "pe_ratio": 25},
