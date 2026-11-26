@@ -1,57 +1,59 @@
-# Delayed intraday market data pilot
+# xang1234 refresh pipeline and intraday trial
 
-Test whether Alpaca Basic can refresh Stock Vision for 500 U.S. stocks during
-a regular trading session. Use completed one-minute historical SIP bars, a
-five-minute refresh interval, and a query end at least 16 minutes behind the
-clock. The extra minute keeps the request beyond the published 15-minute
-restriction. Measure actual age from the bar's end time. The app should label
-the feed as delayed and identify the session and data timestamp.
+Reproduce the refresh decisions in xang1234/stock-screener, then test whether
+the same approach can keep Stock Vision current during a U.S. trading session.
 
-## Data flow
+## What the reference does
 
-1. A local refresh command reads a fixed 500-symbol manifest and requests bars
-   in batches. Follow pagination and choose the latest eligible completed bar
-   per symbol. Use a bounded search window and timeouts. Respect provider rate
-   limits and stop or back off on throttling.
-2. Join prices to a local reference manifest for ticker, company name, and
-   sector. Start with a documented source or a curated pilot manifest. Label
-   unknown sectors explicitly. Preserve missing market cap and P/E as null.
-   Adding and validating a slower fundamentals pipeline is separate work.
-3. Validate a complete candidate before atomically replacing the last good
-   local snapshot. Preserve the old snapshot when a refresh fails or falls
-   below the coverage threshold. Keep refresh time separate from market data
-   time and retain per-symbol bar timestamps for auditing. Use the oldest
-   included bar end for the API's dataset timestamp so the label does not
-   overstate freshness. Do not fill gaps with prior-session prices silently.
-4. Keep the packaged synthetic sample as the default. An explicit local pilot
-   setting serves the saved snapshot through the existing `/api/stocks` path.
-   Searches, filters, sorting, and paging make zero upstream requests. If the
-   pilot is enabled before its first successful refresh, show it as unavailable.
+The default mode imports verified daily price and weekly reference bundles
+from GitHub Releases, then fetches missing or stale symbols through live
+providers. The alternative mode bypasses the bundles. The public demo is
+a daily static export. The scheduled daily pipeline warms the cache before
+running scans and publishing results. In its daily workflow, live means
+fetching from a provider on demand. It does not establish sub-day freshness.
 
-## Pilot decision
+See the [operations guide](https://github.com/xang1234/stock-screener/blob/main/docs/OPERATIONS.md),
+[cache tasks](https://github.com/xang1234/stock-screener/blob/main/backend/app/tasks/cache_tasks.py),
+and [static site guide](https://github.com/xang1234/stock-screener/blob/main/docs/STATIC_SITE.md).
 
-Measure one regular U.S. session, from the first eligible window through the
-last delayed refresh. Use the market calendar so holidays and early closes do
-not count as outages. Report per-cycle coverage, p50/p95 and maximum price age,
-upstream calls including retries, 429s, refresh duration, and the reasons for
-missing symbols. Spot-check several named symbols and compare the results with
-the API and browser labels.
+## What to test
 
-Proposed pass criteria are at least 95% of the fixed universe with eligible
-bars in at least 95% of scheduled cycles, p95 bar age at most 25 minutes for
-published rows during scheduled windows, and at most 10 calls per ordinary
-cycle with no sustained throttling. Keep the denominator and the rules for
-halts and thin trading fixed before the run. Record misses and classify gaps
-instead of substituting a different feed mid-pilot. These are trial thresholds.
+1. Inspect a published release manifest and pin the upstream Git revision used
+   to trace the importer, freshness checks, fallback, and refresh guard.
+2. Replay the same decisions locally using synthetic bundles and a recorded or
+   simulated top-up provider. Run cold, warm, partial, and failed refreshes.
+   Compare requests and coverage with a full-fetch run. Verify that fresh
+   symbols are skipped and failed refreshes preserve the previous snapshot.
+3. Replace daily freshness with completed intraday bar freshness. Daily
+   bundles can seed history and reference data. They cannot satisfy a missing
+   or stale intraday bar. Keep price, reference, and fundamental refreshes on
+   separate clocks, with missing market cap and P/E left null initially.
+4. Verify the upstream sources independently. yfinance documents sub-day
+   intervals. Check what the referenced project actually uses, and what any
+   authorized test feed returns, before choosing the feed. Yahoo requires
+   express prior permission for automated collection. Check Finviz access and
+   data-use terms separately before automating its use. If access is unavailable,
+   run the offline replay and record what remains unverified.
 
-Keep the trial private. Verify account entitlements and applicable storage
-terms before capturing actual provider data. Confirm display rights separately
-before making price data available to others. Keep credentials and live
-snapshots out of Git and CI. Existing Python and Chromium jobs should run
-deterministic fixture checks without credentials.
+See [yfinance interval documentation](https://ranaroussi.github.io/yfinance/reference/api/yfinance.download.html)
+and [Yahoo's U.S. terms](https://legal.yahoo.com/us/en/yahoo/terms/otos/index.html).
 
-See the [implementation checklist](intraday-pilot-todo.md). Provider assumptions
-come from the [plan limits](https://docs.alpaca.markets/us/docs/about-market-data-api),
-[historical SIP FAQ](https://docs.alpaca.markets/us/docs/market-data-faq),
-[multi-symbol bars reference](https://docs.alpaca.markets/us/reference/stockbars),
-and [redistribution guidance](https://alpaca.markets/support/redistribute-alpaca-api).
+## Trial and success criteria
+
+Use a fixed list of 500 U.S. stocks and a five-minute refresh interval during
+one regular session once an authorized intraday source is available. Start
+with a small symbol probe. Record the bar interval, feed delay, completed bar
+end, coverage, actual upstream requests including retries, 429s, and refresh
+duration. Use the exchange calendar and keep missing-symbol rules fixed.
+
+Proposed thresholds are 95% coverage in 95% of scheduled cycles, each refresh
+finishing before the next one, and no sustained throttling. Pick a price-age
+target after confirming the actual feed delay, before the full session starts.
+Report call counts for both full refresh and top-up. Compare cold and warm
+runs separately. Reject prior-session prices as intraday observations.
+
+Serve the last validated snapshot through the existing Stock Vision API with
+source and timestamp metadata. A failed refresh keeps the previous snapshot,
+and screener queries make zero upstream requests. Keep the demo as the default.
+Fixture tests run in existing CI. Live requests and raw provider data stay
+outside CI and Git. See the [implementation checklist](intraday-pilot-todo.md).
