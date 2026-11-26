@@ -3,31 +3,33 @@
 Use commit-message-storyteller on each staged diff. Commit the focused change
 and its checks together before moving to the next task.
 
+See the [pinned trace and offline replay results](intraday-upstream-trace.md).
+
 ## Task 1 — Trace the reference refresh
 
-- [ ] Pin the upstream revision and trace bundle import, freshness checks,
+- [x] Pin the upstream revision and trace bundle import, freshness checks,
   missing/stale top-up, and publication after refresh validation.
-- [ ] Identify whether the referenced price path requests daily or sub-day
+- [x] Identify whether the referenced price path requests daily or sub-day
   bars. Record the manifest format and any limits observed in source.
-- [ ] Document what is confirmed from code and what still requires a run.
+- [x] Document what is confirmed from code and what still requires a run.
 
 No dependencies beyond the merged plan. Scope is the upstream trace notes.
 Commit the findings separately.
 
 ## Task 2 — Replay bundle-first versus full fetch
 
-- [ ] With a fixed synthetic fixture, verify cold start, valid warm start,
+- [x] With a fixed synthetic fixture, verify cold start, valid warm start,
   bad checksum or stale bundle, partial top-up, and failed refresh.
-- [ ] Verify that warm runs fetch only stale or missing symbols and preserve
+- [x] Verify that warm runs fetch only stale or missing symbols and preserve
   the last good snapshot when a refresh fails.
-- [ ] Record fixture call counts for both refresh modes.
+- [x] Record fixture call counts for both refresh modes.
 
 Depends on Task 1. Scope is a local harness, fixture, and focused pytest
 coverage. Run pytest and Ruff before committing.
 
 ## Checkpoint after Tasks 1–2
 
-- [ ] Record which parts of the reference behavior the replay reproduced.
+- [x] Record which parts of the reference behavior the replay reproduced.
 - [ ] Confirm the fixtures run in existing CI. Verify authorization and
   entitlements before attempting a real provider probe.
 
